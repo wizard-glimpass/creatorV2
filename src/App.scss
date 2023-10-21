@@ -1,0 +1,21 @@
+// main.scss
+@import "./assets/variables";
+@import "./assets/mixins";
+
+.button {
+  &--primary {
+    @include button-theme($primary-color);
+  }
+
+  &--secondary {
+    @include button-theme($secondary-color);
+  }
+
+  &--success {
+    @include button-theme($success-color);
+  }
+
+  &--warning {
+    @include button-theme($warning-color);
+  }
+}

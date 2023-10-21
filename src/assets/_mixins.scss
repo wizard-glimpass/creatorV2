@@ -1,0 +1,19 @@
+// _mixins.scss
+@import "variables";
+
+@mixin button-theme($bg-color) {
+  background-color: $bg-color;
+  border: none;
+  color: white;
+  padding: $button-padding;
+  border-radius: $button-border-radius;
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: darken($bg-color, 10%);
+  }
+
+  &:active {
+    background-color: darken($bg-color, 15%);
+  }
+}

@@ -1,0 +1,2 @@
+export const REQUEST_PERMISSION = "REQUEST_PERMISSION";
+export const USER_MOMENT = "USER_MOMENT";
