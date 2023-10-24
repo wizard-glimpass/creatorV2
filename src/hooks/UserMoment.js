@@ -37,13 +37,13 @@ export const UserMoment = () => {
   const [final_speed, setFinalSpeed] = useState(0);
 
   //handlemotionvariables
-  const { permissionGranted, userSteps } = useSelector((state) => ({
+  const { permissionGranted, userSteps, userAngle } = useSelector((state) => ({
     permissionGranted: state.appMetaInfoReducer.permissionGranted,
     userSteps: state.userMomentReducer.steps,
   }));
 
   const permissionGrantedRef = useRef(permissionGranted);
-  const dirRef = useRef();
+  const dirRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
   const dispatch = useDispatch();
   const [open, setOpen] = useState(!permissionGranted);
 
@@ -65,12 +65,7 @@ export const UserMoment = () => {
     window.calibrateAlpha =
       (360 + dirRef.current.alpha + window.calibrateOffset) % 360;
 
-    dispatch(
-      updateUserMoment({
-        steps: 100,
-        angle: 100,
-      })
-    );
+    dispatch(updateUserMoment({ angle: window.calibrateAlpha }));
   };
 
   const handleMotion = (event) => {
@@ -243,15 +238,12 @@ export const UserMoment = () => {
     if (permissionGranted) setOpen(false);
   }, [permissionGranted]);
   return (
-    <>
-      <Modal isOpen={open} onClose={handleClose}>
-        <GifSlideshow
-          requestPermission={() => {
-            requestPermission({ handleOrientation, handleMotion });
-          }}
-        />
-      </Modal>
-      <div>{userSteps}</div>
-    </>
+    <Modal isOpen={open} onClose={handleClose}>
+      <GifSlideshow
+        requestPermission={() => {
+          requestPermission({ handleOrientation, handleMotion });
+        }}
+      />
+    </Modal>
   );
 };

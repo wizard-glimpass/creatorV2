@@ -2,7 +2,7 @@
   "name": "creator-v2",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://wizard-glimpass.github.io/creator-v2/",
+  "homepage": "https://wizard-glimpass.github.io/creatorV2/",
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.4.2",
     "@fortawesome/free-solid-svg-icons": "^6.4.2",
@@ -20,6 +20,7 @@
     "react-redux": "^8.1.3",
     "react-router-dom": "^6.17.0",
     "react-scripts": "5.0.1",
+    "react-swipeable": "^7.0.1",
     "redux": "^4.2.1",
     "sass": "^1.69.4",
     "styled-components": "^6.1.0",

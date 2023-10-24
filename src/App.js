@@ -2,6 +2,8 @@ import { UserMoment } from "./hooks/UserMoment";
 import { HashRouter, Route, Routes } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.scss";
+import { AddNode } from "./component/AddNode";
+import { EditNode } from "./component/EditNode";
 function App() {
   if (true) {
     return (
@@ -10,7 +12,23 @@ function App() {
           {/* Set up your routes */}
           <Routes>
             <Route path="/" element={<div>manish</div>} />
-            <Route path="/add-node" element={<UserMoment />} />
+            <Route
+              path="/add-node"
+              element={
+                <>
+                  <AddNode />
+                  <UserMoment />
+                </>
+              }
+            />
+            <Route
+              path="/preview-node/edit"
+              element={
+                <>
+                  <EditNode />
+                </>
+              }
+            />
           </Routes>
         </div>
       </HashRouter>
