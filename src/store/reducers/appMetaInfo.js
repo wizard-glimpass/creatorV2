@@ -1,4 +1,8 @@
-import { CHANGE_FLOOR, REQUEST_PERMISSION } from "../actionTypes";
+import {
+  CHANGE_FLOOR,
+  GET_ALL_NODES,
+  REQUEST_PERMISSION,
+} from "../actionTypes";
 import { appMetaInfoInitialState } from "../initialState";
 
 export const appMetaInfoReducer = (state = appMetaInfoInitialState, action) => {
@@ -12,6 +16,11 @@ export const appMetaInfoReducer = (state = appMetaInfoInitialState, action) => {
       return {
         ...state,
         currentFloor: action.payload,
+      };
+    case `${GET_ALL_NODES}_SUCCESS`:
+      return {
+        ...state,
+        allNodes: action.payload,
       };
 
     default:

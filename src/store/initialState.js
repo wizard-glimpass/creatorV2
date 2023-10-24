@@ -1,6 +1,7 @@
 export const appMetaInfoInitialState = {
   permissionGranted: false,
   currentFloor: "0",
+  allNodes: [],
 };
 
 export const userMomentInitialState = {

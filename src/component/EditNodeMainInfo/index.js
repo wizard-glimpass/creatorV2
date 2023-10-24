@@ -4,6 +4,7 @@ import {
   faEdit,
   faFileAlt,
   faAngleRight,
+  faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
@@ -15,28 +16,25 @@ import {
   updateTripData,
 } from "../../store/actions/updateNodeInfo";
 import Carousel from "../../common/Carousel";
+import { Link } from "react-router-dom";
 
-const EditNodeMainInfo = () => {
+const EditNodeMainInfo = ({ currentNodeInfo }) => {
   const dispatch = useDispatch();
-  const [shopAngle, setShopAngle] = useState();
+  const [shopAngle, setShopAngle] = useState(currentNodeInfo.shopAngle);
   const [shopAngleEditing, setShopAngleEditing] = useState(false);
 
-  const { userAngle, currentFloor, currentNodeInfo } = useSelector((state) => ({
+  const { userAngle } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
-    currentFloor: state.appMetaInfoReducer.currentFloor,
-    currentNodeInfo: state.nodeInfoReducer,
   }));
 
-  console.log(currentNodeInfo);
-
   const [nodeInfo, setNodeInfo] = useState({
-    nodeNames: [],
-    nodeAltNames: [],
-    nodeName: "",
-    nodeNameEditing: true,
+    ...currentNodeInfo,
+    nodeName: currentNodeInfo.nodeNames[0],
+    nodeNameEditing: false,
     showAltName: false,
-    altName: "",
+    altName: currentNodeInfo.nodeAltName[0],
     nearbyNodeFlag: false,
+    nearByIndexFlag: 0,
   });
   const {
     nodeNames,
@@ -49,7 +47,7 @@ const EditNodeMainInfo = () => {
   } = nodeInfo;
 
   const saveShopAngle = () => {
-    setShopAngleEditing(true);
+    setShopAngleEditing(false);
     dispatch(updateNodeInfo({ shopAngle: shopAngle }));
   };
 
@@ -63,7 +61,6 @@ const EditNodeMainInfo = () => {
       updateNodeInfo({
         nodeNames: temp,
         nodeAltName: tempo,
-        floor: currentFloor,
       })
     );
     setNodeInfo({
@@ -96,7 +93,7 @@ const EditNodeMainInfo = () => {
   };
 
   useEffect(() => {
-    if (!shopAngleEditing) {
+    if (shopAngleEditing) {
       setShopAngle(userAngle);
     }
   }, [userAngle]);
@@ -106,6 +103,15 @@ const EditNodeMainInfo = () => {
       <div onClick={saveShopAngle} className="user-angle-container">
         {shopAngle}
         <span className="field-info">Current shop angle</span>
+        <button className="action-icon">
+          <FontAwesomeIcon
+            onClick={(event) => {
+              event.stopPropagation();
+              setShopAngleEditing(true);
+            }}
+            icon={faRepeat}
+          />
+        </button>
       </div>
       {nodeNameEditing ? (
         <div className="user-angle-container">
@@ -197,14 +203,19 @@ const EditNodeMainInfo = () => {
         >
           Update node
         </button>
-
-        <button className="button button--primary">Back</button>
+        <Link to="/preview-node">
+          <button className="button button--primary">Back</button>
+        </Link>
       </div>
       <div className="user-angle-container">
         <span className="field-info">Node sub type</span>
-        <DropDownSelect options={nodeSubType} onChange={handleDropdownChange} />
+        <DropDownSelect
+          defaultValue={currentNodeInfo.nodeSubtype}
+          options={nodeSubType}
+          onChange={handleDropdownChange}
+        />
       </div>
-      <Carousel items={currentNodeInfo.nodeNames} />
+      <Carousel direction="horizontal" items={currentNodeInfo.nodeNames} />
     </>
   );
 };

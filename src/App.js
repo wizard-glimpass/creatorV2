@@ -4,6 +4,8 @@ import logo from "./logo.svg";
 import "./App.scss";
 import { AddNode } from "./component/AddNode";
 import { EditNode } from "./component/EditNode";
+import PreviewNodes from "./component/PreviewNodes";
+import CreateTrip from "./component/CreateTrip";
 function App() {
   if (true) {
     return (
@@ -22,10 +24,27 @@ function App() {
               }
             />
             <Route
-              path="/preview-node/edit"
+              path="/preview-node/edit/:nodeIndex"
               element={
                 <>
                   <EditNode />
+                </>
+              }
+            />
+            <Route
+              path="/create-trip"
+              element={
+                <>
+                  <UserMoment />
+                  <CreateTrip />
+                </>
+              }
+            />
+            <Route
+              path="/preview-node"
+              element={
+                <>
+                  <PreviewNodes />
                 </>
               }
             />

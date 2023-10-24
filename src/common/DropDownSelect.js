@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "./dropDownSelect.scss";
 
-const DropDownSelect = ({ options, onChange }) => {
-  const [selected, setSelected] = useState(options[0].value);
+const DropDownSelect = ({ options, onChange, defaultValue }) => {
+  const [selected, setSelected] = useState(defaultValue);
 
   const handleChange = (e) => {
     const newValue = e.target.value;

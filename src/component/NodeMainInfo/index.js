@@ -4,6 +4,7 @@ import {
   faEdit,
   faFileAlt,
   faAngleRight,
+  faRepeat,
 } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
@@ -33,15 +34,13 @@ const carouselData = [
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
   const [shopAngle, setShopAngle] = useState();
-  const [shopAngleEditing, setShopAngleEditing] = useState(false);
+  const [shopAngleEditing, setShopAngleEditing] = useState(true);
 
   const { userAngle, currentFloor, currentNodeInfo } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
     currentFloor: state.appMetaInfoReducer.currentFloor,
     currentNodeInfo: state.nodeInfoReducer,
   }));
-
-  console.log(currentNodeInfo);
 
   const [nodeInfo, setNodeInfo] = useState({
     nodeNames: [],
@@ -63,7 +62,7 @@ const NodeMainInfo = () => {
   } = nodeInfo;
 
   const saveShopAngle = () => {
-    setShopAngleEditing(true);
+    setShopAngleEditing(false);
     dispatch(updateNodeInfo({ shopAngle: shopAngle }));
   };
 
@@ -110,7 +109,7 @@ const NodeMainInfo = () => {
   };
 
   useEffect(() => {
-    if (!shopAngleEditing) {
+    if (shopAngleEditing) {
       setShopAngle(userAngle);
     }
   }, [userAngle]);
@@ -120,6 +119,15 @@ const NodeMainInfo = () => {
       <div onClick={saveShopAngle} className="user-angle-container">
         {shopAngle}
         <span className="field-info">Current shop angle</span>
+        <button className="action-icon">
+          <FontAwesomeIcon
+            onClick={(event) => {
+              event.stopPropagation();
+              setShopAngleEditing(true);
+            }}
+            icon={faRepeat}
+          />
+        </button>
       </div>
       {nodeNameEditing ? (
         <div className="user-angle-container">
@@ -218,15 +226,19 @@ const NodeMainInfo = () => {
         >
           Next node
         </button>
-        <Link to="/preview-node/edit">
+        <Link to="/preview-node">
           <button className="button button--primary">Preview</button>
         </Link>
       </div>
       <div className="user-angle-container">
         <span className="field-info">Node sub type</span>
-        <DropDownSelect options={nodeSubType} onChange={handleDropdownChange} />
+        <DropDownSelect
+          defaultValue={nodeSubType[0].value}
+          options={nodeSubType}
+          onChange={handleDropdownChange}
+        />
       </div>
-      <Carousel items={currentNodeInfo.nodeNames} />
+      <Carousel direction="horizontal" items={currentNodeInfo.nodeNames} />
     </>
   );
 };

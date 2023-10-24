@@ -4,7 +4,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
 import { useSwipeable } from "react-swipeable";
 
-function Carousel({ items, itemsToShow = 1 }) {
+function Carousel({ items, itemsToShow = 1, direction }) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlers = useSwipeable({
@@ -18,7 +18,7 @@ function Carousel({ items, itemsToShow = 1 }) {
   return (
     <div className="carousel-container" {...handlers}>
       <div
-        className="carousel-wrapper"
+        className={`carousel-wrapper ${direction}`}
         style={{
           transform: `translateX(-${(100 / itemsToShow) * activeIndex}%)`,
         }}

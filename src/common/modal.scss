@@ -2,6 +2,7 @@ $modal-background-color: #fff;
 $modal-overlay-background: rgba(0, 0, 0, 0.6);
 
 .modal-overlay {
+  z-index: 100;
   position: fixed;
   top: 0;
   left: 0;

@@ -11,7 +11,13 @@
   .carousel-wrapper {
     display: flex;
     transition: transform 0.5s ease;
+    &.horizontal {
+      flex-direction: row;
+    }
 
+    &.vertical {
+      flex-direction: column;
+    }
     .carousel-slide {
       flex: 0 0 auto;
       width: 200px; // Assuming 3 items are visible, adjust as needed

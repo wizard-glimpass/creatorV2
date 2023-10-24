@@ -1,19 +1,28 @@
-import React, { useState } from "react";
+import React, { useMemo, useState } from "react";
+import { useParams } from "react-router-dom";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faEdit, faClose } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
+
 import "./editNode.scss";
 import { changeFloor } from "../../store/actions/appMetaInfo";
 import EditNodeMainInfo from "../EditNodeMainInfo";
 
 export const EditNode = () => {
   const dispatch = useDispatch();
-  const { userAngle, currentFloor } = useSelector((state) => ({
+  const { nodeIndex } = useParams();
+  const { userAngle, tripInfo } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
-    currentFloor: state.appMetaInfoReducer.currentFloor,
+    tripInfo: state.tripInfoReducer,
   }));
 
-  const [floorValue, setFloorValue] = useState(currentFloor);
+  const currentNodeInfo = useMemo(() => {
+    return tripInfo[nodeIndex] || {};
+  }, [tripInfo, nodeIndex]);
+
+  console.log(nodeIndex);
+
+  const [floorValue, setFloorValue] = useState(currentNodeInfo.floor);
 
   const [floorEditing, setFloorEditing] = useState(false);
 
@@ -34,7 +43,6 @@ export const EditNode = () => {
             <button
               onClick={() => {
                 setFloorEditing(false);
-                dispatch(changeFloor(floorValue));
               }}
               className="action-icon"
             >
@@ -51,7 +59,7 @@ export const EditNode = () => {
         ) : (
           <div className="user-angle-container">
             <span className="field-info">Selected floor</span>
-            {currentFloor}
+            {currentNodeInfo.floor}
             <button
               onClick={() => {
                 setFloorEditing(true);
@@ -64,7 +72,7 @@ export const EditNode = () => {
         )}
       </div>
 
-      <EditNodeMainInfo />
+      <EditNodeMainInfo currentNodeInfo={currentNodeInfo} />
     </>
   );
 };

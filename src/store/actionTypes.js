@@ -4,3 +4,4 @@ export const CHANGE_FLOOR = "CHANGE_FLOOR";
 export const UPDATE_NODE_INFO = "UPDATE_NODE_INFO";
 export const RESET_NODE_INFO = "RESET_NODE_INFO";
 export const UPDATE_TRIP_DATA = "UPDATE_TRIP_DATA";
+export const GET_ALL_NODES = "GET_ALL_NODES";

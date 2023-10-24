@@ -203,9 +203,6 @@ export const UserMoment = () => {
             prev_force.current = final_force.current;
           }
           final_force.current = 0;
-          //   window.angleError = Math.atan(Math.sin(sin_a* (Math.PI / 180))/(window.currentStep-Math.cos(sin_a* (Math.PI / 180))));
-          //   window.stepError = Math.sqrt((window.currentStep - Math.cos(sin_a* (Math.PI / 180))) + Math.sin(sin_a* (Math.PI / 180)));
-          //   window.stepError = window.currentStep - window.stepError-1;
         }
 
         if (omega_max.current > 0) {
