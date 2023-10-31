@@ -5,14 +5,39 @@ import { useDispatch, useSelector } from "react-redux";
 import SearchBox from "../../common/SearchBox";
 import { getAllNodesAction } from "../../store/actions/appMetaInfo";
 import "./createTrip.scss";
+import Modal from "../../common/Modal";
+import {
+  updateCurrentSource,
+  updateDestinationNode,
+} from "../../store/actions/connectionInfo";
+import { updateUserMoment } from "../../store/actions/userMoment";
+import { updateTripDataAdd } from "../../store/actions/updateNodeInfo";
+import BesideNodes from "../BesideNodes";
 
 export const CreateTrip = () => {
   const dispatch = useDispatch();
+  const [open, setOpen] = useState(true);
+  const [showBesideNodes, setShowBesideNodes] = useState(false);
+  const [connectNodeModal, setConnectNodeModal] = useState(false);
+
+  const handleClose = () => {
+    setOpen(false);
+  };
   const [stepsEditing, setStepsEditing] = useState(false);
-  const { userAngle, userSteps, allNodesData } = useSelector((state) => ({
+  const {
+    userAngle,
+    userSteps,
+    allNodesData,
+    connectionInfo,
+    resetSteps,
+    tripInfo,
+  } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
     userSteps: state.userMomentReducer.steps,
+    resetSteps: state.userMomentReducer.resetSteps,
     allNodesData: state.appMetaInfoReducer.allNodes,
+    connectionInfo: state.connectInfoReducer,
+    tripInfo: state.tripInfoReducer,
   }));
 
   const [averageAngleData, setAverageAngleData] = useState({
@@ -38,6 +63,16 @@ export const CreateTrip = () => {
       });
       dispatch(getAllNodesAction(allNodesData));
     });
+  };
+
+  const confirmTrip = async () => {
+    const resp = tripInfo;
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(resp),
+    };
+    await fetch("https://app.glimpass.com/graph/create", requestOptions);
   };
 
   useEffect(() => {
@@ -71,8 +106,68 @@ export const CreateTrip = () => {
     calculateAverageAngle();
   }, [userSteps]);
 
+  const onSelect = (selectedOption) => {
+    console.log(selectedOption, "manish");
+    handleClose();
+
+    dispatch(updateCurrentSource(selectedOption));
+    dispatch(updateTripDataAdd({ nodeId: selectedOption.nodeId }));
+  };
+
   return (
     <div className="create-trip-container">
+      <Modal isOpen={open} onClose={handleClose}>
+        <SearchBox onSelect={onSelect} type="Source" data={allNodesData} />
+      </Modal>
+      <Modal
+        isOpen={connectNodeModal}
+        handleClose={() => {
+          setConnectNodeModal(false);
+        }}
+      >
+        {connectionInfo?.sourceNode?.name}
+        <div>.</div>
+        {userSteps} - {averageAngleData.averageAngle}
+        <div>.</div>
+        {connectionInfo?.destinationNode?.name}
+        <button
+          className="button button--primary"
+          onClick={() => {
+            dispatch(updateCurrentSource(connectionInfo.destinationNode));
+            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
+
+            dispatch(
+              updateTripDataAdd({
+                nodeId: connectionInfo.destinationNode.nodeId,
+                nodeName: connectionInfo.destinationNode.name,
+              })
+            );
+
+            setConnectNodeModal(false);
+            setAverageAngleData({
+              angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
+              interval: 0,
+              averageAngle: 0,
+            });
+          }}
+        >
+          connect
+        </button>
+      </Modal>
+      {showBesideNodes && (
+        <Modal
+          isOpen
+          onClose={() => {
+            setShowBesideNodes(false);
+          }}
+        >
+          <BesideNodes />
+        </Modal>
+      )}
+      <div className="user-angle-container">
+        <span className="field-info">Current source node</span>
+        {connectionInfo?.sourceNode?.name}
+      </div>
       <div className="user-angle-container">
         <span className="field-info">Current angle</span>
         {userAngle}
@@ -118,14 +213,64 @@ export const CreateTrip = () => {
         )}
       </div>
 
-      <SearchBox type="Source" data={allNodesData} />
-      <SearchBox type="Destination" data={allNodesData} />
+      <SearchBox
+        onSelect={(selectedOption) => {
+          handleClose();
+          dispatch(updateDestinationNode(selectedOption));
+          setConnectNodeModal(true);
+          dispatch(
+            updateTripDataAdd({
+              label: "RELATED_TO",
+              steps: userSteps,
+              angle: averageAngleData.averageAngle,
+            })
+          );
+        }}
+        type="Destination"
+        data={allNodesData}
+      />
 
-      <button className="button button--primary">Connect</button>
+      <button
+        onClick={() => {
+          dispatch(
+            updateTripDataAdd({
+              label: "RELATED_TO",
+              steps: userSteps,
+              angle: averageAngleData.averageAngle,
+            })
+          );
 
-      <button className="button button--secondary">Add checkpoint</button>
+          dispatch(
+            updateTripDataAdd({
+              floor: connectionInfo.sourceNode?.floor,
+              market: "test",
+              name: new Date(),
+              nodeType: "checkpoint",
+            })
+          );
+          dispatch(updateUserMoment({ resetSteps: !resetSteps }));
+          setAverageAngleData({
+            angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
+            interval: 0,
+            averageAngle: 0,
+          });
+        }}
+        className="button button--secondary"
+      >
+        Add checkpoint
+      </button>
 
-      <button className="button button--primary">Preview trip</button>
+      <button onClick={confirmTrip} className="button button--primary">
+        Preview trip
+      </button>
+      <button
+        onClick={() => {
+          setShowBesideNodes(true);
+        }}
+        className="button button--primary"
+      >
+        Show beside nodes
+      </button>
     </div>
   );
 };

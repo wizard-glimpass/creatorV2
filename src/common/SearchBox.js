@@ -1,8 +1,9 @@
 import React, { useState, useRef } from "react";
 import "./searchBox.scss";
 
-function SearchBox({ data, type }) {
+function SearchBox({ data, type, onSelect }) {
   const [query, setQuery] = useState("");
+  const [showDropdown, setSHowDropdown] = useState(false);
   const [activeIndex, setActiveIndex] = useState(-1);
 
   const ref = useRef(null);
@@ -16,11 +17,14 @@ function SearchBox({ data, type }) {
   const handleInputChange = (e) => {
     setQuery(e.target.value);
     setActiveIndex(-1);
+    setSHowDropdown(true);
   };
 
   const handleSuggestionClick = (suggestion) => {
     setQuery(suggestion.name);
     setActiveIndex(-1);
+    setSHowDropdown(false);
+    onSelect(suggestion);
   };
 
   const handleKeyDown = (e) => {
@@ -55,7 +59,7 @@ function SearchBox({ data, type }) {
         onChange={handleInputChange}
         onKeyDown={handleKeyDown}
       />
-      {query && (
+      {showDropdown && (
         <ul>
           {filteredData.map((suggestion, index) => (
             <li

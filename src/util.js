@@ -199,7 +199,13 @@ export const nodeSubType = [
     value: "washroom",
   },
   {
-    name: "Floor change",
-    value: "fllor change",
+    name: "Floor change undirectional",
+    value: "floor change unidirection",
+    "meta-direction": 1,
+  },
+  {
+    name: "Floor change bidirectional",
+    value: "floor change bidirection",
+    "meta-direction": 0,
   },
 ];

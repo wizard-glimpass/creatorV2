@@ -5,12 +5,12 @@ import { faEdit, faClose } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 
 import "./editNode.scss";
-import { changeFloor } from "../../store/actions/appMetaInfo";
 import EditNodeMainInfo from "../EditNodeMainInfo";
+import { updateTripDataRemoveNearby } from "../../store/actions/updateNodeInfo";
 
 export const EditNode = () => {
-  const dispatch = useDispatch();
   const { nodeIndex } = useParams();
+  const dispatch = useDispatch();
   const { userAngle, tripInfo } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
     tripInfo: state.tripInfoReducer,
@@ -19,8 +19,6 @@ export const EditNode = () => {
   const currentNodeInfo = useMemo(() => {
     return tripInfo[nodeIndex] || {};
   }, [tripInfo, nodeIndex]);
-
-  console.log(nodeIndex);
 
   const [floorValue, setFloorValue] = useState(currentNodeInfo.floor);
 
@@ -43,6 +41,16 @@ export const EditNode = () => {
             <button
               onClick={() => {
                 setFloorEditing(false);
+                const tempNodeInfo = {
+                  ...currentNodeInfo,
+                  floor: floorValue,
+                };
+                dispatch(
+                  updateTripDataRemoveNearby({
+                    nodeInfo: tempNodeInfo,
+                    index: nodeIndex,
+                  })
+                );
               }}
               className="action-icon"
             >

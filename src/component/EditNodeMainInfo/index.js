@@ -11,15 +11,16 @@ import DropDownSelect from "../../common/DropDownSelect";
 import "./editNodeMainInfo.scss";
 import { nodeSubType } from "../../util";
 import {
-  resetNodeInfo,
   updateNodeInfo,
-  updateTripData,
+  updateTripDataRemoveNearby,
 } from "../../store/actions/updateNodeInfo";
 import Carousel from "../../common/Carousel";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 
 const EditNodeMainInfo = ({ currentNodeInfo }) => {
+  const [itemSelectedIndex, setItemSelectedIndex] = useState(0);
   const dispatch = useDispatch();
+  const { nodeIndex } = useParams();
   const [shopAngle, setShopAngle] = useState(currentNodeInfo.shopAngle);
   const [shopAngleEditing, setShopAngleEditing] = useState(false);
 
@@ -29,12 +30,10 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
 
   const [nodeInfo, setNodeInfo] = useState({
     ...currentNodeInfo,
-    nodeName: currentNodeInfo.nodeNames[0],
+    nodeName: currentNodeInfo.nodeNames[itemSelectedIndex],
     nodeNameEditing: false,
     showAltName: false,
-    altName: currentNodeInfo.nodeAltName[0],
-    nearbyNodeFlag: false,
-    nearByIndexFlag: 0,
+    altName: currentNodeInfo.nodeAltName[itemSelectedIndex],
   });
   const {
     nodeNames,
@@ -43,7 +42,6 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
     nodeNameEditing,
     showAltName,
     altName,
-    nearbyNodeFlag,
   } = nodeInfo;
 
   const saveShopAngle = () => {
@@ -70,26 +68,33 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
       nodeNameEditing: true,
       showAltName: false,
       altName: "",
-      nearbyNodeFlag: true,
     });
   };
 
-  const resetNodeMainInfoDataOnNextNode = () => {
-    dispatch(updateTripData(currentNodeInfo));
-    dispatch(resetNodeInfo());
-    setNodeInfo({
-      nodeNames: [],
-      nodeAltNames: [],
-      nodeName: "",
-      nodeNameEditing: true,
-      showAltName: false,
-      altName: "",
-      nearbyNodeFlag: false,
-    });
+  const handleDropdownChange = (event) => {
+    const tempNodeInfo = {
+      ...currentNodeInfo,
+      nodeSubtype: event.target.value,
+      floorDirection: event.target.floorDirection,
+    };
+
+    dispatch(
+      updateTripDataRemoveNearby({ nodeInfo: tempNodeInfo, index: nodeIndex })
+    );
   };
 
-  const handleDropdownChange = (value) => {
-    dispatch(updateNodeInfo({ nodeSubtype: value }));
+  const deleteItem = (index) => {
+    const tempNodeInfo = { ...currentNodeInfo };
+    // tempNodeInfo.node
+    tempNodeInfo.nodeNames.splice(index, 1);
+    tempNodeInfo.nodeAltName.splice(index, 1);
+    dispatch(
+      updateTripDataRemoveNearby({ nodeInfo: tempNodeInfo, index: nodeIndex })
+    );
+  };
+
+  const onClickItem = (index) => {
+    setItemSelectedIndex(index);
   };
 
   useEffect(() => {
@@ -97,6 +102,14 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
       setShopAngle(userAngle);
     }
   }, [userAngle]);
+
+  useEffect(() => {
+    setNodeInfo((prev) => ({
+      ...prev,
+      nodeName: currentNodeInfo.nodeNames[itemSelectedIndex],
+      altName: currentNodeInfo.nodeAltName[itemSelectedIndex],
+    }));
+  }, [itemSelectedIndex]);
 
   return (
     <>
@@ -123,6 +136,17 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
                   ...prev,
                   nodeNameEditing: false,
                 }));
+
+                const tempNodeInfo = { ...currentNodeInfo };
+                // tempNodeInfo.node
+                tempNodeInfo.nodeNames[itemSelectedIndex] = nodeName;
+                console.log(tempNodeInfo, "manish");
+                dispatch(
+                  updateTripDataRemoveNearby({
+                    nodeInfo: tempNodeInfo,
+                    index: nodeIndex,
+                  })
+                );
               }}
               icon={faAngleRight}
             />
@@ -187,6 +211,16 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
                   ...prev,
                   showAltName: false,
                 }));
+                const tempNodeInfo = { ...currentNodeInfo };
+                // tempNodeInfo.node
+                tempNodeInfo.nodeAltName[itemSelectedIndex] = altName;
+
+                dispatch(
+                  updateTripDataRemoveNearby({
+                    nodeInfo: tempNodeInfo,
+                    index: nodeIndex,
+                  })
+                );
               }}
               icon={faAngleRight}
             />
@@ -215,7 +249,13 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
           onChange={handleDropdownChange}
         />
       </div>
-      <Carousel direction="horizontal" items={currentNodeInfo.nodeNames} />
+      <Carousel
+        direction="horizontal"
+        showCrossIcon
+        onClickCross={deleteItem}
+        onClickItem={onClickItem}
+        items={currentNodeInfo.nodeNames}
+      />
     </>
   );
 };

@@ -1,10 +1,17 @@
 import React, { useState } from "react";
 import "./carousel.scss";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faHome } from "@fortawesome/free-solid-svg-icons";
 import { useSwipeable } from "react-swipeable";
 
-function Carousel({ items, itemsToShow = 1, direction }) {
+function Carousel({
+  items,
+  itemsToShow = 1,
+  direction,
+  showCrossIcon,
+  onClickCross,
+  onClickItem,
+}) {
   const [activeIndex, setActiveIndex] = useState(0);
 
   const handlers = useSwipeable({
@@ -20,11 +27,28 @@ function Carousel({ items, itemsToShow = 1, direction }) {
       <div
         className={`carousel-wrapper ${direction}`}
         style={{
-          transform: `translateX(-${(100 / itemsToShow) * activeIndex}%)`,
+          transform: `translateX(-${200 * activeIndex}px)`,
         }}
       >
         {items.map((item, index) => (
-          <div key={index} className="carousel-slide">
+          <div
+            onClick={() => {
+              if (onClickItem) onClickItem(index);
+            }}
+            key={index}
+            className="carousel-slide"
+          >
+            {showCrossIcon && index !== 0 && (
+              <button className="action-icon">
+                <FontAwesomeIcon
+                  onClick={() => {
+                    onClickCross(index);
+                  }}
+                  icon={faClose}
+                  className="icon icon-close"
+                />
+              </button>
+            )}
             <div className="content-wrapper">
               <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
               <p>{item}</p>

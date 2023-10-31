@@ -13,7 +13,7 @@ import { nodeSubType } from "../../util";
 import {
   resetNodeInfo,
   updateNodeInfo,
-  updateTripData,
+  updateTripDataAdd,
 } from "../../store/actions/updateNodeInfo";
 import Carousel from "../../common/Carousel";
 import { Link } from "react-router-dom";
@@ -91,7 +91,7 @@ const NodeMainInfo = () => {
   };
 
   const resetNodeMainInfoDataOnNextNode = () => {
-    dispatch(updateTripData(currentNodeInfo));
+    dispatch(updateTripDataAdd(currentNodeInfo));
     dispatch(resetNodeInfo());
     setNodeInfo({
       nodeNames: [],
@@ -104,8 +104,13 @@ const NodeMainInfo = () => {
     });
   };
 
-  const handleDropdownChange = (value) => {
-    dispatch(updateNodeInfo({ nodeSubtype: value }));
+  const handleDropdownChange = (event) => {
+    dispatch(
+      updateNodeInfo({
+        nodeSubtype: event.target.value,
+        floorDirection: event.target.floorDirection,
+      })
+    );
   };
 
   useEffect(() => {

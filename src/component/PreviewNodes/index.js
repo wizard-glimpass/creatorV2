@@ -10,7 +10,22 @@ const PreviewNodes = () => {
   const { tripInfo } = useSelector((state) => ({
     tripInfo: state.tripInfoReducer,
   }));
+  const createNodes = async () => {
+    const requestOptions = {
+      method: "POST",
 
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(tripInfo),
+    };
+    const response = await fetch(
+      "https://app.glimpass.com/graph/create-nodes",
+      requestOptions
+    );
+
+    response.json().then((data) => {
+      console.log(data, "manish");
+    });
+  };
   return (
     <>
       {tripInfo.map((nodes, index) => {
@@ -26,10 +41,14 @@ const PreviewNodes = () => {
             >
               {nodes.nodeNames[0]}
             </p>
-            
           </div>
         );
       })}
+      <div className="action-btn-container">
+        <button onClick={createNodes} className="button button--secondary">
+          Add node nearby
+        </button>
+      </div>
     </>
   );
 };

@@ -20,14 +20,18 @@
     }
     .carousel-slide {
       flex: 0 0 auto;
-      width: 200px; // Assuming 3 items are visible, adjust as needed
+      width: 220px; // Assuming 3 items are visible, adjust as needed
       opacity: 1;
       z-index: 1;
       text-align: center;
       display: flex;
       align-items: center;
       justify-content: center;
-      height: 150px;
+      height: 90px;
+      border: 1px solid #e7e2e2;
+      border-radius: 23px;
+      margin-right: 20px;
+      position: relative;
 
       .content-wrapper {
         display: flex;

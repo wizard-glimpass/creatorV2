@@ -37,10 +37,17 @@ export const UserMoment = () => {
   const [final_speed, setFinalSpeed] = useState(0);
 
   //handlemotionvariables
-  const { permissionGranted, userSteps, userAngle } = useSelector((state) => ({
-    permissionGranted: state.appMetaInfoReducer.permissionGranted,
-    userSteps: state.userMomentReducer.steps,
-  }));
+  const { permissionGranted, userSteps, userAngle, resetSteps } = useSelector(
+    (state) => ({
+      permissionGranted: state.appMetaInfoReducer.permissionGranted,
+      userSteps: state.userMomentReducer.steps,
+      resetSteps: state.userMomentReducer.resetSteps,
+    })
+  );
+
+  useEffect(() => {
+    steps.current = 0;
+  }, [resetSteps]);
 
   const permissionGrantedRef = useRef(permissionGranted);
   const dirRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
