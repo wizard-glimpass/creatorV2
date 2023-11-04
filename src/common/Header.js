@@ -1,10 +1,14 @@
 import React from "react";
 import "./header.scss";
+import { Link } from "react-router-dom";
 
-export const Header = () => {
+const Header = () => {
   return (
-    <h1>
-      <span>G</span>limpass<small>creators</small>
-    </h1>
+    <Link to="/">
+      <h1>
+        <span>G</span>limpass<small>creators</small>
+      </h1>
+    </Link>
   );
 };
+export default Header;

@@ -6,14 +6,24 @@ import { AddNode } from "./component/AddNode";
 import { EditNode } from "./component/EditNode";
 import PreviewNodes from "./component/PreviewNodes";
 import CreateTrip from "./component/CreateTrip";
+import Homepage from "./component/Homepage";
+import Header from "./common/Header";
 function App() {
   if (true) {
     return (
       <HashRouter>
         <div>
+          <Header />
           {/* Set up your routes */}
           <Routes>
-            <Route path="/" element={<div>manish</div>} />
+            <Route
+              path="/"
+              element={
+                <>
+                  <Homepage />
+                </>
+              }
+            />
             <Route
               path="/add-node"
               element={
