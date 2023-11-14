@@ -12,14 +12,20 @@ export const userMomentInitialState = {
 
 export const nodeInfoInitialState = {
   floor: null,
-  market: "test",
+  market: "",
   floorDirection: 1,
   shopAngle: null,
   nodeNames: [],
   nodeAltName: [],
-  nodeSubtype: null,
+  nodeType: null,
 };
 export const connectionInfoState = {
   sourceNode: null,
   destinationNode: null,
+};
+
+export const snackBarInitialState = {
+  message: "",
+  type: null,
+  visible: false,
 };

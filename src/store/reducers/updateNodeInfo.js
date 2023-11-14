@@ -10,7 +10,8 @@ export const updateNodeInfoReducer = (state = nodeInfoInitialState, action) => {
       };
 
     case RESET_NODE_INFO:
-      return nodeInfoInitialState;
+      return { ...nodeInfoInitialState, market: state.market };
+
     default:
       return state;
   }

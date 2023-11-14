@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./nodeMainInfo.scss";
-import { nodeSubType } from "../../util";
+import { nodeType } from "../../util";
 import {
   resetNodeInfo,
   updateNodeInfo,
@@ -17,19 +17,6 @@ import {
 } from "../../store/actions/updateNodeInfo";
 import Carousel from "../../common/Carousel";
 import { Link } from "react-router-dom";
-
-const carouselData = [
-  { content: "This is slide 1" },
-  { content: "This is slide 2" },
-  { content: "This is slide 3" },
-  { content: "This is slide 1" },
-  { content: "This is slide 2" },
-  { content: "This is slide 3" },
-  { content: "This is slide 1" },
-  { content: "This is slide 2" },
-  { content: "This is slide 3" },
-  // ... add as many items as needed
-];
 
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
@@ -49,6 +36,7 @@ const NodeMainInfo = () => {
     nodeNameEditing: true,
     showAltName: false,
     altName: "",
+    nodeType: nodeType[0].value,
     nearbyNodeFlag: false,
   });
   const {
@@ -77,6 +65,7 @@ const NodeMainInfo = () => {
         nodeNames: temp,
         nodeAltName: tempo,
         floor: currentFloor,
+        nodeType: nodeInfo.nodeType,
       })
     );
     setNodeInfo({
@@ -87,6 +76,7 @@ const NodeMainInfo = () => {
       showAltName: false,
       altName: "",
       nearbyNodeFlag: true,
+      nodeType: nodeInfo.nodeType,
     });
   };
 
@@ -101,13 +91,18 @@ const NodeMainInfo = () => {
       showAltName: false,
       altName: "",
       nearbyNodeFlag: false,
+      nodeType: nodeInfo.nodeType,
     });
   };
 
   const handleDropdownChange = (event) => {
+    setNodeInfo((prev) => ({
+      ...prev,
+      nodeType: event.target.value,
+    }));
     dispatch(
       updateNodeInfo({
-        nodeSubtype: event.target.value,
+        nodeType: event.target.value,
         floorDirection: event.target.floorDirection,
       })
     );
@@ -220,26 +215,43 @@ const NodeMainInfo = () => {
       <div className="action-btn-container">
         <button
           onClick={resetNodeMainInfoDataOnAddNearby}
-          className="button button--secondary"
+          disabled={!nodeInfo.nodeName}
+          className={`${
+            !nodeInfo?.nodeName ? "disable" : ""
+          } button button--secondary`}
         >
           Add node nearby
         </button>
 
         <button
           onClick={resetNodeMainInfoDataOnNextNode}
-          className="button button--primary"
+          disabled={nodeInfo.nodeName}
+          className={`${
+            nodeInfo?.nodeName || nodeInfo.nodeAltNames.length === 0
+              ? "disable"
+              : ""
+          } button button--primary`}
         >
           Next node
         </button>
         <Link to="/preview-node">
-          <button className="button button--primary">Preview</button>
+          <button
+            disabled={nodeInfo.nodeName}
+            className={`${
+              nodeInfo?.nodeName || nodeInfo.nodeAltNames.length !== 0
+                ? "disable"
+                : ""
+            } button button--primary`}
+          >
+            Preview
+          </button>
         </Link>
       </div>
       <div className="user-angle-container">
         <span className="field-info">Node sub type</span>
         <DropDownSelect
-          defaultValue={nodeSubType[0].value}
-          options={nodeSubType}
+          defaultValue={nodeType[0].value}
+          options={nodeType}
           onChange={handleDropdownChange}
         />
       </div>

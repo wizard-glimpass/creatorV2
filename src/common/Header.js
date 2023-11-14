@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useEffect } from "react";
 import "./header.scss";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { updateNodeInfo } from "../store/actions/updateNodeInfo";
 
 const Header = () => {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  useEffect(() => {
+    if (!window.sessionStorage.getItem("marketVal")) {
+      navigate("/market-selection");
+    } else {
+      dispatch(
+        updateNodeInfo({ market: window.sessionStorage.getItem("marketVal") })
+      );
+    }
+  }, []);
   return (
     <Link to="/">
       <h1>

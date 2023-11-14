@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./editNodeMainInfo.scss";
-import { nodeSubType } from "../../util";
+import { nodeType } from "../../util";
 import {
   updateNodeInfo,
   updateTripDataRemoveNearby,
@@ -74,7 +74,7 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
   const handleDropdownChange = (event) => {
     const tempNodeInfo = {
       ...currentNodeInfo,
-      nodeSubtype: event.target.value,
+      nodeType: event.target.value,
       floorDirection: event.target.floorDirection,
     };
 
@@ -244,8 +244,8 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
       <div className="user-angle-container">
         <span className="field-info">Node sub type</span>
         <DropDownSelect
-          defaultValue={currentNodeInfo.nodeSubtype}
-          options={nodeSubType}
+          defaultValue={currentNodeInfo.nodeType}
+          options={nodeType}
           onChange={handleDropdownChange}
         />
       </div>

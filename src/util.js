@@ -185,10 +185,10 @@ export { yawMatrix, pitchMatrix, rollMatrix, vect, dotProduct, inertialFrame };
 //     return False
 // }
 
-export const nodeSubType = [
+export const nodeType = [
   {
-    name: "Floor",
-    value: "floor",
+    name: "Shop",
+    value: "shop",
   },
   {
     name: "Gate",

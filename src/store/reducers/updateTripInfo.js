@@ -1,4 +1,4 @@
-import { UPDATE_TRIP_DATA } from "../actionTypes";
+import { RESET_TRIP_INFO, UPDATE_TRIP_DATA } from "../actionTypes";
 
 export const updateTripInfoReducer = (state = [], action) => {
   switch (action.type) {
@@ -8,6 +8,9 @@ export const updateTripInfoReducer = (state = [], action) => {
       const tempState = [...state];
       tempState[action.payload.index] = action.payload.nodeInfo;
       return tempState;
+
+    case RESET_TRIP_INFO:
+      return [];
     default:
       return state;
   }

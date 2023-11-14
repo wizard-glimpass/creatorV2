@@ -2,6 +2,7 @@ import {
   RESET_NODE_INFO,
   UPDATE_NODE_INFO,
   UPDATE_TRIP_DATA,
+  RESET_TRIP_INFO,
 } from "../actionTypes";
 
 export const updateNodeInfo = (payload) => ({
@@ -11,6 +12,9 @@ export const updateNodeInfo = (payload) => ({
 
 export const resetNodeInfo = () => ({
   type: RESET_NODE_INFO,
+});
+export const resetTripInfo = () => ({
+  type: RESET_TRIP_INFO,
 });
 
 export const updateTripDataAdd = (payload) => ({

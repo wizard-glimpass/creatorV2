@@ -1,19 +1,25 @@
 import { UserMoment } from "./hooks/UserMoment";
-import { HashRouter, Route, Routes } from "react-router-dom";
+import { HashRouter, Route, Routes, useNavigate } from "react-router-dom";
 import logo from "./logo.svg";
 import "./App.scss";
 import { AddNode } from "./component/AddNode";
 import { EditNode } from "./component/EditNode";
 import PreviewNodes from "./component/PreviewNodes";
+import PreviewTrip from "./component/PreviewTrip";
 import CreateTrip from "./component/CreateTrip";
 import Homepage from "./component/Homepage";
 import Header from "./common/Header";
+import MarketSelection from "./component/MarketSelection";
+import Snackbar from "./common/Snackbar";
+
 function App() {
   if (true) {
     return (
       <HashRouter>
         <div>
           <Header />
+          <Snackbar />
+
           {/* Set up your routes */}
           <Routes>
             <Route
@@ -51,6 +57,14 @@ function App() {
               }
             />
             <Route
+              path="/market-selection"
+              element={
+                <>
+                  <MarketSelection />
+                </>
+              }
+            />
+            <Route
               path="/preview-node"
               element={
                 <>
@@ -58,6 +72,7 @@ function App() {
                 </>
               }
             />
+            <Route path="/preview-trip" element={<PreviewTrip />} />
           </Routes>
         </div>
       </HashRouter>

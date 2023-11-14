@@ -11,7 +11,7 @@ function SearchBox({ data, type, onSelect }) {
   // Sample data for suggestions
 
   const filteredData = data.filter((item) =>
-    item.name.toLowerCase().includes(query.toLowerCase())
+    item?.name?.toLowerCase()?.includes(query?.toLowerCase())
   );
 
   const handleInputChange = (e) => {

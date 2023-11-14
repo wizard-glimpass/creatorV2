@@ -9,12 +9,8 @@ const gifs = [
 
 const instructions = [
   {
-    title: "Please walk towards to the shop",
-    description: "Heads up your device towards shop gate !",
-  },
-  {
     title: "Open your compass app in device and heads up to NORTH direction",
-    description: "Heads up your device towards shop gate !",
+    description: "",
   },
 ];
 

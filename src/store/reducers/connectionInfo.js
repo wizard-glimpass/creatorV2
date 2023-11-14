@@ -1,4 +1,4 @@
-import { UPDATE_TRIP_DATA } from "../actionTypes";
+import { RESET_CONNECTIONS, UPDATE_TRIP_DATA } from "../actionTypes";
 import { connectionInfoState } from "../initialState";
 
 export const connectInfoReducer = (state = connectionInfoState, action) => {
@@ -7,6 +7,8 @@ export const connectInfoReducer = (state = connectionInfoState, action) => {
       return { ...state, sourceNode: action.payload };
     case `${UPDATE_TRIP_DATA}_DESTINATION_NODE`:
       return { ...state, destinationNode: action.payload };
+    case RESET_CONNECTIONS:
+      return connectionInfoState;
     default:
       return state;
   }

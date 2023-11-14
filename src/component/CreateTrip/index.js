@@ -7,18 +7,25 @@ import { getAllNodesAction } from "../../store/actions/appMetaInfo";
 import "./createTrip.scss";
 import Modal from "../../common/Modal";
 import {
+  resetConnections,
   updateCurrentSource,
   updateDestinationNode,
 } from "../../store/actions/connectionInfo";
 import { updateUserMoment } from "../../store/actions/userMoment";
-import { updateTripDataAdd } from "../../store/actions/updateNodeInfo";
+import {
+  resetTripInfo,
+  updateTripDataAdd,
+} from "../../store/actions/updateNodeInfo";
 import BesideNodes from "../BesideNodes";
+import { useNavigate, Link } from "react-router-dom";
 
 export const CreateTrip = () => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [open, setOpen] = useState(true);
   const [showBesideNodes, setShowBesideNodes] = useState(false);
   const [connectNodeModal, setConnectNodeModal] = useState(false);
+  const [sourceNodeEdit, setSourceNodeEdit] = useState(false);
 
   const handleClose = () => {
     setOpen(false);
@@ -48,11 +55,14 @@ export const CreateTrip = () => {
 
   const getAllNodes = async () => {
     const requestOptions = {
-      method: "GET",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        market: window.sessionStorage.getItem("marketVal"),
+      }),
     };
     const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-nodes?market=${window.marketSelection}`,
+      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
       requestOptions
     );
 
@@ -63,16 +73,6 @@ export const CreateTrip = () => {
       });
       dispatch(getAllNodesAction(allNodesData));
     });
-  };
-
-  const confirmTrip = async () => {
-    const resp = tripInfo;
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(resp),
-    };
-    await fetch("https://app.glimpass.com/graph/create", requestOptions);
   };
 
   useEffect(() => {
@@ -93,7 +93,6 @@ export const CreateTrip = () => {
 
   useEffect(() => {
     setAverageAngleData((prevAngle) => {
-      console.log(prevAngle, "manish");
       let sumX = prevAngle.angleSum.cosAlphaSum;
       let sumY = prevAngle.angleSum.sinAlphaSum;
       let interval = prevAngle.interval + 1;
@@ -107,21 +106,17 @@ export const CreateTrip = () => {
   }, [userSteps]);
 
   const onSelect = (selectedOption) => {
-    console.log(selectedOption, "manish");
     handleClose();
-
+    setSourceNodeEdit(false);
     dispatch(updateCurrentSource(selectedOption));
-    dispatch(updateTripDataAdd({ nodeId: selectedOption.nodeId }));
+    // dispatch(updateTripDataAdd(selectedOption));
   };
 
   return (
     <div className="create-trip-container">
-      <Modal isOpen={open} onClose={handleClose}>
-        <SearchBox onSelect={onSelect} type="Source" data={allNodesData} />
-      </Modal>
       <Modal
         isOpen={connectNodeModal}
-        handleClose={() => {
+        onClose={() => {
           setConnectNodeModal(false);
         }}
       >
@@ -133,15 +128,27 @@ export const CreateTrip = () => {
         <button
           className="button button--primary"
           onClick={() => {
-            dispatch(updateCurrentSource(connectionInfo.destinationNode));
-            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
-
+            if (tripInfo.length !== 0) {
+              dispatch(
+                updateTripDataAdd({
+                  label: "RELATED_TO",
+                  steps: userSteps,
+                  angle: averageAngleData.averageAngle,
+                })
+              );
+            }
+            dispatch(updateTripDataAdd(connectionInfo.sourceNode));
             dispatch(
               updateTripDataAdd({
-                nodeId: connectionInfo.destinationNode.nodeId,
-                nodeName: connectionInfo.destinationNode.name,
+                label: "RELATED_TO",
+                steps: userSteps,
+                angle: averageAngleData.averageAngle,
               })
             );
+            dispatch(updateTripDataAdd(connectionInfo.destinationNode));
+
+            dispatch(updateCurrentSource(connectionInfo.destinationNode));
+            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
 
             setConnectNodeModal(false);
             setAverageAngleData({
@@ -164,10 +171,20 @@ export const CreateTrip = () => {
           <BesideNodes />
         </Modal>
       )}
-      <div className="user-angle-container">
-        <span className="field-info">Current source node</span>
-        {connectionInfo?.sourceNode?.name}
-      </div>
+      {sourceNodeEdit ? (
+        <SearchBox onSelect={onSelect} type="Source" data={allNodesData} />
+      ) : (
+        <div
+          onClick={() => {
+            setSourceNodeEdit(true);
+          }}
+          className="user-angle-container"
+        >
+          <span className="field-info">Current source node</span>
+          {connectionInfo?.sourceNode?.name}
+        </div>
+      )}
+
       <div className="user-angle-container">
         <span className="field-info">Current angle</span>
         {userAngle}
@@ -190,10 +207,12 @@ export const CreateTrip = () => {
               <FontAwesomeIcon icon={faClose} />
             </button>
             <input
-              type="text"
+              type="number"
               value={userSteps}
               onChange={(event) => {
-                //   setFloorValue(event.target.value);
+                dispatch(
+                  updateUserMoment({ steps: parseInt(event.target.value) })
+                );
               }}
             />
           </div>
@@ -217,18 +236,18 @@ export const CreateTrip = () => {
         onSelect={(selectedOption) => {
           handleClose();
           dispatch(updateDestinationNode(selectedOption));
-          setConnectNodeModal(true);
-          dispatch(
-            updateTripDataAdd({
-              label: "RELATED_TO",
-              steps: userSteps,
-              angle: averageAngleData.averageAngle,
-            })
-          );
         }}
         type="Destination"
         data={allNodesData}
       />
+      <button
+        className="button button--primary"
+        onClick={() => {
+          setConnectNodeModal(true);
+        }}
+      >
+        Add connection
+      </button>
 
       <button
         onClick={() => {
@@ -259,10 +278,9 @@ export const CreateTrip = () => {
       >
         Add checkpoint
       </button>
-
-      <button onClick={confirmTrip} className="button button--primary">
-        Preview trip
-      </button>
+      <Link to="/preview-trip">
+        <button className="button button--primary">Preview trip</button>
+      </Link>
       <button
         onClick={() => {
           setShowBesideNodes(true);
