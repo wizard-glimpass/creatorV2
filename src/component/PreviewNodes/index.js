@@ -1,11 +1,12 @@
 import React from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faHome } from "@fortawesome/free-solid-svg-icons";
+import { faClose, faHome } from "@fortawesome/free-solid-svg-icons";
 import { useNavigate } from "react-router-dom";
 import "./previewNodes.scss";
 import { showSnackbar } from "../../store/actions/snackBar";
 import {
+  removeNodeInfo,
   resetNodeInfo,
   resetTripInfo,
 } from "../../store/actions/updateNodeInfo";
@@ -38,6 +39,10 @@ const PreviewNodes = ({ disable = false }) => {
       dispatch(showSnackbar("This is a error!", "alert"));
     }
   };
+
+  const removeNode = (index) => {
+    dispatch(removeNodeInfo({ index, tripInfo }));
+  };
   return (
     <>
       {tripInfo.map((nodes, index) => {
@@ -53,6 +58,14 @@ const PreviewNodes = ({ disable = false }) => {
             >
               {nodes.nodeNames[0]}
             </p>
+            <span
+              onClick={() => {
+                removeNode(index);
+              }}
+              className="close-btn"
+            >
+              <FontAwesomeIcon icon={faClose} size="1x" className="icon" />
+            </span>
           </div>
         );
       })}

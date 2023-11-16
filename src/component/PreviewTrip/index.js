@@ -39,7 +39,7 @@ const PreviewTrip = ({ disable = false }) => {
   return (
     <>
       {tripInfo.map((nodes, index) => {
-        if (nodes?.nodeType === "shop")
+        if (nodes?.nodeType === "shop") {
           return (
             <div className="preview-node">
               <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
@@ -47,7 +47,7 @@ const PreviewTrip = ({ disable = false }) => {
               <p className="node-name">{nodes.name}</p>
             </div>
           );
-        else if (nodes?.nodeType === "checkpoint")
+        } else if (nodes?.nodeType === "checkpoint") {
           return (
             <div className="preview-node">
               <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
@@ -55,6 +55,7 @@ const PreviewTrip = ({ disable = false }) => {
               <p className="node-name">{JSON.stringify(nodes.name)}</p>
             </div>
           );
+        }
         return <></>;
       })}
       <div className="action-btn-container">

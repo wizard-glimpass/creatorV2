@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./searchBox.scss";
+import useOutsideTap from "../hooks/useOutsideTap";
 
 function SearchBox({ data, type, onSelect }) {
   const [query, setQuery] = useState("");
@@ -49,6 +50,10 @@ function SearchBox({ data, type, onSelect }) {
   //     document.removeEventListener("mousedown", handleClickOutside);
   //   };
   // }, []);
+
+  useOutsideTap(ref, () => {
+    setSHowDropdown(false);
+  });
 
   return (
     <div className="searchbox-container" ref={ref}>

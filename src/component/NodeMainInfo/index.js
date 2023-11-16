@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faEdit,
@@ -17,11 +17,14 @@ import {
 } from "../../store/actions/updateNodeInfo";
 import Carousel from "../../common/Carousel";
 import { Link } from "react-router-dom";
+import useOutsideTap from "../../hooks/useOutsideTap";
 
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
   const [shopAngle, setShopAngle] = useState();
   const [shopAngleEditing, setShopAngleEditing] = useState(true);
+  const nodeNameRef = useRef();
+  const nodeAltNameRef = useRef();
 
   const { userAngle, currentFloor, currentNodeInfo } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
@@ -114,6 +117,23 @@ const NodeMainInfo = () => {
     }
   }, [userAngle]);
 
+  const onSaveNodeName = () => {
+    setNodeInfo((prev) => ({
+      ...prev,
+      nodeNameEditing: false,
+    }));
+  };
+
+  const onSaveNodeAltName = () => {
+    setNodeInfo((prev) => ({
+      ...prev,
+      showAltName: false,
+    }));
+  };
+
+  useOutsideTap(nodeNameRef, onSaveNodeName);
+  useOutsideTap(nodeAltNameRef, onSaveNodeAltName);
+
   return (
     <>
       <div onClick={saveShopAngle} className="user-angle-container">
@@ -133,18 +153,11 @@ const NodeMainInfo = () => {
         <div className="user-angle-container">
           <span className="field-info">Node name</span>
           <button className="action-icon">
-            <FontAwesomeIcon
-              onClick={() => {
-                setNodeInfo((prev) => ({
-                  ...prev,
-                  nodeNameEditing: false,
-                }));
-              }}
-              icon={faAngleRight}
-            />
+            <FontAwesomeIcon onClick={onSaveNodeName} icon={faAngleRight} />
           </button>
           <input
             type="text"
+            ref={nodeNameRef}
             placeholder="Enter node name"
             value={nodeName}
             onChange={(event) => {
@@ -156,7 +169,15 @@ const NodeMainInfo = () => {
           />
         </div>
       ) : (
-        <div className="user-angle-container">
+        <div
+          className="user-angle-container"
+          onClick={() => {
+            setNodeInfo((prev) => ({
+              ...prev,
+              nodeNameEditing: true,
+            }));
+          }}
+        >
           <span className="field-info">Node name</span>
           {nodeName}
           <button className="action-icon">
@@ -170,20 +191,11 @@ const NodeMainInfo = () => {
               className="alt-icon"
               icon={faFileAlt}
             />
-            <FontAwesomeIcon
-              onClick={() => {
-                setNodeInfo((prev) => ({
-                  ...prev,
-                  nodeNameEditing: true,
-                }));
-              }}
-              icon={faEdit}
-            />
           </button>
         </div>
       )}
       {showAltName && (
-        <div className="user-angle-container">
+        <div ref={nodeAltNameRef} className="user-angle-container">
           <span className="field-info">Node alternate name</span>
           <input
             type="text"
@@ -197,15 +209,7 @@ const NodeMainInfo = () => {
             }}
           />
           <button className="action-icon">
-            <FontAwesomeIcon
-              onClick={() => {
-                setNodeInfo((prev) => ({
-                  ...prev,
-                  showAltName: false,
-                }));
-              }}
-              icon={faAngleRight}
-            />
+            <FontAwesomeIcon onClick={onSaveNodeAltName} icon={faAngleRight} />
           </button>
         </div>
       )}

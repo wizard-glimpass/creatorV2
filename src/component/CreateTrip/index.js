@@ -30,7 +30,6 @@ export const CreateTrip = () => {
   const handleClose = () => {
     setOpen(false);
   };
-  const [stepsEditing, setStepsEditing] = useState(false);
   const {
     userAngle,
     userSteps,
@@ -194,60 +193,22 @@ export const CreateTrip = () => {
           {averageAngleData.averageAngle}
           <span className="field-info">Average angle</span>
         </div>
-        {stepsEditing ? (
-          <div className="user-angle-container">
-            <span className="field-info">Total steps</span>
-            <button
-              onClick={() => {
-                setStepsEditing(false);
-                //   dispatch(changeFloor(floorValue));
-              }}
-              className="action-icon"
-            >
-              <FontAwesomeIcon icon={faClose} />
-            </button>
-            <input
-              type="number"
-              value={userSteps}
-              onChange={(event) => {
-                dispatch(
-                  updateUserMoment({ steps: parseInt(event.target.value) })
-                );
-              }}
-            />
-          </div>
-        ) : (
-          <div className="user-angle-container">
-            <span className="field-info">Total steps</span>
-            {userSteps}
-            <button
-              onClick={() => {
-                setStepsEditing(true);
-              }}
-              className="action-icon"
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </button>
-          </div>
-        )}
+
+        <div className="user-angle-container">
+          <span className="field-info">Total steps</span>
+          {userSteps}
+        </div>
       </div>
 
       <SearchBox
         onSelect={(selectedOption) => {
           handleClose();
           dispatch(updateDestinationNode(selectedOption));
+          setConnectNodeModal(true);
         }}
         type="Destination"
         data={allNodesData}
       />
-      <button
-        className="button button--primary"
-        onClick={() => {
-          setConnectNodeModal(true);
-        }}
-      >
-        Add connection
-      </button>
 
       <button
         onClick={() => {
@@ -278,9 +239,9 @@ export const CreateTrip = () => {
       >
         Add checkpoint
       </button>
-      <Link to="/preview-trip">
-        <button className="button button--primary">Preview trip</button>
-      </Link>
+      <button className="button button--primary">
+        <Link to="/preview-trip">Preview trip</Link>
+      </button>
       <button
         onClick={() => {
           setShowBesideNodes(true);
