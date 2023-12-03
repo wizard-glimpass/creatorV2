@@ -26,6 +26,7 @@ export const CreateTrip = () => {
   const [showBesideNodes, setShowBesideNodes] = useState(false);
   const [connectNodeModal, setConnectNodeModal] = useState(false);
   const [sourceNodeEdit, setSourceNodeEdit] = useState(false);
+  const [finalSteps, setFinalSteps] = useState(0);
 
   const handleClose = () => {
     setOpen(false);
@@ -78,6 +79,10 @@ export const CreateTrip = () => {
     getAllNodes();
   }, []);
 
+  useEffect(() => {
+    setFinalSteps(userSteps);
+  }, [userSteps]);
+
   const calculateAverageAngle = () => {
     const { angleSum: alphaSum, interval: alphaReadingsCounted } =
       averageAngleData;
@@ -121,29 +126,30 @@ export const CreateTrip = () => {
       >
         {connectionInfo?.sourceNode?.name}
         <div>.</div>
-        {userSteps} - {averageAngleData.averageAngle}
+        <input
+          type="text"
+          value={finalSteps}
+          onChange={(e) => {
+            setFinalSteps(e.target.value);
+          }}
+        />
+        {averageAngleData.averageAngle}
         <div>.</div>
         {connectionInfo?.destinationNode?.name}
         <button
           className="button button--primary"
           onClick={() => {
-            if (tripInfo.length !== 0) {
-              dispatch(
-                updateTripDataAdd({
-                  label: "RELATED_TO",
-                  steps: userSteps,
-                  angle: averageAngleData.averageAngle,
-                })
-              );
+            if (tripInfo.length === 0) {
+              dispatch(updateTripDataAdd(connectionInfo.sourceNode));
             }
-            dispatch(updateTripDataAdd(connectionInfo.sourceNode));
             dispatch(
               updateTripDataAdd({
                 label: "RELATED_TO",
-                steps: userSteps,
+                steps: finalSteps,
                 angle: averageAngleData.averageAngle,
               })
             );
+
             dispatch(updateTripDataAdd(connectionInfo.destinationNode));
 
             dispatch(updateCurrentSource(connectionInfo.destinationNode));

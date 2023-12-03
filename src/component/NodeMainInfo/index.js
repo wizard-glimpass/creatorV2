@@ -1,11 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import {
-  faEdit,
-  faFileAlt,
-  faAngleRight,
-  faRepeat,
-} from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./nodeMainInfo.scss";
@@ -84,7 +77,22 @@ const NodeMainInfo = () => {
   };
 
   const resetNodeMainInfoDataOnNextNode = () => {
-    dispatch(updateTripDataAdd(currentNodeInfo));
+    const temp = [...nodeNames];
+    const tempo = [...nodeAltNames];
+    temp.push(nodeName);
+    const l = altName?.length > 0 ? altName : nodeName;
+    tempo.push(l);
+
+    saveShopAngle();
+    dispatch(
+      updateTripDataAdd({
+        ...currentNodeInfo,
+        nodeNames: temp,
+        nodeAltName: tempo,
+        floor: currentFloor,
+        nodeType: nodeInfo.nodeType,
+      })
+    );
     dispatch(resetNodeInfo());
     setNodeInfo({
       nodeNames: [],
@@ -136,7 +144,7 @@ const NodeMainInfo = () => {
 
   return (
     <>
-      <div onClick={saveShopAngle} className="user-angle-container">
+      {/* <div onClick={saveShopAngle} className="user-angle-container">
         {shopAngle}
         <span className="field-info">Current shop angle</span>
         <button className="action-icon">
@@ -148,13 +156,11 @@ const NodeMainInfo = () => {
             icon={faRepeat}
           />
         </button>
-      </div>
+      </div> */}
       {nodeNameEditing ? (
         <div className="user-angle-container">
           <span className="field-info">Node name</span>
-          <button className="action-icon">
-            <FontAwesomeIcon onClick={onSaveNodeName} icon={faAngleRight} />
-          </button>
+
           <input
             type="text"
             ref={nodeNameRef}
@@ -180,18 +186,6 @@ const NodeMainInfo = () => {
         >
           <span className="field-info">Node name</span>
           {nodeName}
-          <button className="action-icon">
-            <FontAwesomeIcon
-              onClick={() => {
-                setNodeInfo((prev) => ({
-                  ...prev,
-                  showAltName: true,
-                }));
-              }}
-              className="alt-icon"
-              icon={faFileAlt}
-            />
-          </button>
         </div>
       )}
       {showAltName && (
@@ -208,16 +202,24 @@ const NodeMainInfo = () => {
               }));
             }}
           />
-          <button className="action-icon">
-            <FontAwesomeIcon onClick={onSaveNodeAltName} icon={faAngleRight} />
-          </button>
         </div>
       )}
-      {altName?.length > 0 && !showAltName && (
-        <div className="user-angle-container">{altName}</div>
+      {!showAltName && (
+        <div
+          className="user-angle-container"
+          onClick={() => {
+            setNodeInfo((prev) => ({
+              ...prev,
+              showAltName: true,
+            }));
+          }}
+        >
+          <span className="field-info">Node alternate name</span>
+          {altName}
+        </div>
       )}
       <div className="action-btn-container">
-        <button
+        {/* <button
           onClick={resetNodeMainInfoDataOnAddNearby}
           disabled={!nodeInfo.nodeName}
           className={`${
@@ -225,15 +227,13 @@ const NodeMainInfo = () => {
           } button button--secondary`}
         >
           Add node nearby
-        </button>
+        </button> */}
 
         <button
           onClick={resetNodeMainInfoDataOnNextNode}
-          disabled={nodeInfo.nodeName}
+          disabled={!nodeInfo.nodeName}
           className={`${
-            nodeInfo?.nodeName || nodeInfo.nodeAltNames.length === 0
-              ? "disable"
-              : ""
+            !nodeInfo?.nodeName ? "disable" : ""
           } button button--primary`}
         >
           Next node

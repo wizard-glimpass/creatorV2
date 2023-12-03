@@ -1,0 +1,95 @@
+import React, { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllNodesAction } from "../../store/actions/appMetaInfo";
+import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import "./validateAngle.scss";
+import { showSnackbar } from "../../store/actions/snackBar";
+
+const ValidateAngle = () => {
+  const dispatch = useDispatch();
+  const { allNodes, userAngle } = useSelector((state) => ({
+    allNodes: state.appMetaInfoReducer.allNodes,
+    userAngle: state.userMomentReducer.angle,
+  }));
+
+  const getAllNodes = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        market: window.sessionStorage.getItem("marketVal"),
+      }),
+    };
+    const response = await fetch(
+      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
+      requestOptions
+    );
+
+    response.json().then((data) => {
+      const allNodesData = [];
+      Object.keys(data).map((d) => {
+        allNodesData.push(data[d]);
+      });
+      dispatch(getAllNodesAction(allNodesData));
+    });
+  };
+
+  const updateShopAngleReq = async (payload) => {
+    try {
+      const requestOptions = {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      };
+      await fetch(
+        "https://app.glimpass.com/graph/create-nodes",
+        requestOptions
+      );
+      dispatch(showSnackbar("Updation done successfully!", "success"));
+    } catch (err) {
+      dispatch(showSnackbar("This is an error!", "alert"));
+    }
+  };
+
+  const updateShopAngle = (node) => {
+    const payload = {
+      nodeId: node.nodeId,
+      shop_angle: userAngle,
+    };
+
+    updateShopAngleReq(payload);
+  };
+  useEffect(() => {
+    getAllNodes();
+  }, []);
+  return (
+    <div className="validate-angle-container">
+      <div className="user-angle-container">
+        {userAngle}
+        <span className="field-info">Angle</span>
+      </div>
+      <div className="nodes-list">
+        {allNodes.map((nodes, index) => {
+          return (
+            <div className="preview-node" key={nodes.nodeId}>
+              <p className="node-name">{nodes.name}</p>
+              <span>{nodes.shop_angle}</span>
+              <span
+                onClick={(e) => {
+                  console.log(nodes);
+                  updateShopAngle(nodes);
+                }}
+                className="close-btn"
+              >
+                <FontAwesomeIcon icon={faUpload} size="1x" className="icon" />
+              </span>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+export default ValidateAngle;

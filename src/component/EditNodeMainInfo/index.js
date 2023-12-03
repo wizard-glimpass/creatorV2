@@ -231,12 +231,6 @@ const EditNodeMainInfo = ({ currentNodeInfo }) => {
         <div className="user-angle-container">{altName}</div>
       )}
       <div className="action-btn-container">
-        <button
-          onClick={resetNodeMainInfoDataOnAddNearby}
-          className="button button--secondary"
-        >
-          Update node
-        </button>
         <Link to="/preview-node">
           <button className="button button--primary">Back</button>
         </Link>

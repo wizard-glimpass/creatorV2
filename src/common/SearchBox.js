@@ -22,7 +22,7 @@ function SearchBox({ data, type, onSelect }) {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion.name);
+    setQuery("");
     setActiveIndex(-1);
     setSHowDropdown(false);
     onSelect(suggestion);
@@ -66,16 +66,21 @@ function SearchBox({ data, type, onSelect }) {
       />
       {showDropdown && (
         <ul>
-          {filteredData.map((suggestion, index) => (
-            <li
-              key={suggestion}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className={index === activeIndex ? "active" : ""}
-            >
-              {suggestion.name}
-              <span className="align-right">{suggestion.floor}</span>
-            </li>
-          ))}
+          {filteredData.map((suggestion, index) => {
+            if (suggestion.nearBy === null)
+              return (
+                <li
+                  key={suggestion}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className={index === activeIndex ? "active" : ""}
+                >
+                  {suggestion.altNode ? suggestion.altNode : suggestion.name}
+                  <span className="align-right">{suggestion.floor}</span>
+                </li>
+              );
+
+            return <></>;
+          })}
         </ul>
       )}
     </div>

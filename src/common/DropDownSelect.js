@@ -6,7 +6,6 @@ const DropDownSelect = ({ options, onChange, defaultValue }) => {
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    console.log(e.target.value, "manish");
     e.target.floorDirection = 0;
     if (newValue === "floor change unidirection") {
       e.target.floorDirection = 1;
