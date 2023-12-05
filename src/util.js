@@ -202,10 +202,12 @@ export const nodeType = [
     name: "Floor change undirectional",
     value: "floor change unidirection",
     "meta-direction": 1,
+    meta_type: "floor_change",
   },
   {
     name: "Floor change bidirectional",
     value: "floor change bidirection",
     "meta-direction": 0,
+    meta_type: "floor_change",
   },
 ];

@@ -113,7 +113,7 @@ const NodeMainInfo = () => {
     }));
     dispatch(
       updateNodeInfo({
-        nodeType: event.target.value,
+        nodeType: event.target.nodeTypee,
         floorDirection: event.target.floorDirection,
       })
     );
