@@ -83,7 +83,6 @@ const NodeMainInfo = () => {
     const l = altName?.length > 0 ? altName : nodeName;
     tempo.push(l);
 
-    saveShopAngle();
     dispatch(
       updateTripDataAdd({
         ...currentNodeInfo,
@@ -91,6 +90,7 @@ const NodeMainInfo = () => {
         nodeAltName: tempo,
         floor: currentFloor,
         nodeType: nodeInfo.nodeType,
+        shopAngle: shopAngle,
       })
     );
     dispatch(resetNodeInfo());

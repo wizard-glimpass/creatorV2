@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllNodesAction } from "../../store/actions/appMetaInfo";
-import { faUpload } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "./validateAngle.scss";
 import { showSnackbar } from "../../store/actions/snackBar";
+import SearchBar from "../../common/SearchBar";
 
 const ValidateAngle = () => {
   const dispatch = useDispatch();
@@ -47,16 +46,21 @@ const ValidateAngle = () => {
         requestOptions
       );
       dispatch(showSnackbar("Updation done successfully!", "success"));
+      getAllNodes();
     } catch (err) {
       dispatch(showSnackbar("This is an error!", "alert"));
     }
   };
 
   const updateShopAngle = (node) => {
-    const payload = {
-      nodeId: node.nodeId,
-      shop_angle: userAngle,
-    };
+    const payload = [
+      {
+        ...node,
+        nodeNames: [node.name],
+        nodeAltName: [node.altNode],
+        shopAngle: userAngle || 20,
+      },
+    ];
 
     updateShopAngleReq(payload);
   };
@@ -69,25 +73,7 @@ const ValidateAngle = () => {
         {userAngle}
         <span className="field-info">Angle</span>
       </div>
-      <div className="nodes-list">
-        {allNodes.map((nodes, index) => {
-          return (
-            <div className="preview-node" key={nodes.nodeId}>
-              <p className="node-name">{nodes.name}</p>
-              <span>{nodes.shop_angle}</span>
-              <span
-                onClick={(e) => {
-                  console.log(nodes);
-                  updateShopAngle(nodes);
-                }}
-                className="close-btn"
-              >
-                <FontAwesomeIcon icon={faUpload} size="1x" className="icon" />
-              </span>
-            </div>
-          );
-        })}
-      </div>
+      <SearchBar dataList={allNodes} updateShopAngle={updateShopAngle} />
     </div>
   );
 };
