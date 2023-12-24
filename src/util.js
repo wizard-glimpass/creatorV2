@@ -211,3 +211,10 @@ export const nodeType = [
     meta_type: "floor_change",
   },
 ];
+
+export const shopExpensive = [
+  { label: "$" },
+  { label: "$$" },
+  { label: "$$$" },
+  // more data items
+];

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./nodeMainInfo.scss";
-import { nodeType } from "../../util";
+import { nodeType, shopExpensive } from "../../util";
 import {
   resetNodeInfo,
   updateNodeInfo,
@@ -11,6 +11,7 @@ import {
 import Carousel from "../../common/Carousel";
 import { Link } from "react-router-dom";
 import useOutsideTap from "../../hooks/useOutsideTap";
+import Chips from "../../common/Chips";
 
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
@@ -142,6 +143,10 @@ const NodeMainInfo = () => {
   useOutsideTap(nodeNameRef, onSaveNodeName);
   useOutsideTap(nodeAltNameRef, onSaveNodeAltName);
 
+  const handleChipClick = (item) => {
+    console.log("Chip clicked:", item);
+  };
+
   return (
     <>
       {/* <div onClick={saveShopAngle} className="user-angle-container">
@@ -259,6 +264,7 @@ const NodeMainInfo = () => {
           onChange={handleDropdownChange}
         />
       </div>
+      <Chips data={shopExpensive} onChipClick={handleChipClick} />
       <Carousel direction="horizontal" items={currentNodeInfo.nodeNames} />
     </>
   );
