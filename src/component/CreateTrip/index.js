@@ -17,10 +17,12 @@ import {
 import BesideNodes from "../BesideNodes";
 import { Link } from "react-router-dom";
 import GifSlideshow from "../../common/GifSlideshow";
+import CheckpointIdentification from "../../common/CheckpointIdentification";
 
 export const CreateTrip = () => {
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
+  const [showCheckpointModal, setShowCheckpointModal] = useState(false);
   const [showBesideNodes, setShowBesideNodes] = useState(false);
   const [connectNodeModal, setConnectNodeModal] = useState(false);
   const [sourceNodeEdit, setSourceNodeEdit] = useState(false);
@@ -118,6 +120,11 @@ export const CreateTrip = () => {
     <div className="create-trip-container">
       <button
         onClick={() => {
+          setAverageAngleData({
+            angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
+            interval: 0,
+            averageAngle: 0,
+          });
           setOpen(true);
         }}
         className="button button--primary"
@@ -181,6 +188,11 @@ export const CreateTrip = () => {
           }}
         />
       </Modal>
+      {showCheckpointModal && (
+        <CheckpointIdentification
+          setShowCheckpointModal={setShowCheckpointModal}
+        />
+      )}
       {showBesideNodes && (
         <Modal
           isOpen
@@ -233,6 +245,7 @@ export const CreateTrip = () => {
 
       <button
         onClick={() => {
+          setShowCheckpointModal(true);
           dispatch(
             updateTripDataAdd({
               label: "RELATED_TO",
