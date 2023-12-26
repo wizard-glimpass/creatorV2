@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faClose } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import SearchBox from "../../common/SearchBox";
 import { getAllNodesAction } from "../../store/actions/appMetaInfo";
@@ -17,12 +15,12 @@ import {
   updateTripDataAdd,
 } from "../../store/actions/updateNodeInfo";
 import BesideNodes from "../BesideNodes";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import GifSlideshow from "../../common/GifSlideshow";
 
 export const CreateTrip = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
   const [showBesideNodes, setShowBesideNodes] = useState(false);
   const [connectNodeModal, setConnectNodeModal] = useState(false);
   const [sourceNodeEdit, setSourceNodeEdit] = useState(false);
@@ -118,6 +116,14 @@ export const CreateTrip = () => {
 
   return (
     <div className="create-trip-container">
+      <button
+        onClick={() => {
+          setOpen(true);
+        }}
+        className="button button--primary"
+      >
+        Reset steps and angle
+      </button>
       <Modal
         isOpen={connectNodeModal}
         onClose={() => {
@@ -165,6 +171,15 @@ export const CreateTrip = () => {
         >
           connect
         </button>
+      </Modal>
+      <Modal isOpen={open} onClose={handleClose}>
+        <GifSlideshow
+          requestPermission={() => {
+            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
+            setOpen(false);
+            delete window.calibrateOffset;
+          }}
+        />
       </Modal>
       {showBesideNodes && (
         <Modal
