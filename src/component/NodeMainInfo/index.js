@@ -110,7 +110,7 @@ const NodeMainInfo = () => {
   const handleDropdownChange = (event) => {
     setNodeInfo((prev) => ({
       ...prev,
-      nodeType: event.target.value,
+      nodeType: event.target.nodeTypee,
     }));
     dispatch(
       updateNodeInfo({
