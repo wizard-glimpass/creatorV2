@@ -4,6 +4,7 @@ import logo from "./logo.svg";
 import "./App.scss";
 import { AddNode } from "./component/AddNode";
 import { EditNode } from "./component/EditNode";
+import { AdminEditNode } from "./component/AdminEditNode";
 import PreviewNodes from "./component/PreviewNodes";
 import PreviewTrip from "./component/PreviewTrip";
 import CreateTrip from "./component/CreateTrip";
@@ -45,6 +46,14 @@ function App() {
               element={
                 <>
                   <EditNode />
+                </>
+              }
+            />
+            <Route
+              path="/edit-node/nodes/:nodeId"
+              element={
+                <>
+                  <AdminEditNode />
                 </>
               }
             />

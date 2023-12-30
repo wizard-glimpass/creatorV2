@@ -7,7 +7,7 @@ import SearchBar from "../../common/SearchBar";
 
 const ValidateAngle = () => {
   const dispatch = useDispatch();
-  const { allNodes, userAngle } = useSelector((state) => ({
+  const { allNodes, userAngle } = useSelector(state => ({
     allNodes: state.appMetaInfoReducer.allNodes,
     userAngle: state.userMomentReducer.angle,
   }));
@@ -25,16 +25,16 @@ const ValidateAngle = () => {
       requestOptions
     );
 
-    response.json().then((data) => {
+    response.json().then(data => {
       const allNodesData = [];
-      Object.keys(data).map((d) => {
+      Object.keys(data).map(d => {
         allNodesData.push(data[d]);
       });
       dispatch(getAllNodesAction(allNodesData));
     });
   };
 
-  const updateShopAngleReq = async (payload) => {
+  const updateShopAngleReq = async payload => {
     try {
       const requestOptions = {
         method: "POST",
@@ -52,13 +52,13 @@ const ValidateAngle = () => {
     }
   };
 
-  const updateShopAngle = (node) => {
+  const updateShopAngle = node => {
     const payload = [
       {
         ...node,
         nodeNames: [node.name],
         nodeAltName: [node.altNode],
-        shopAngle: userAngle || 20,
+        shopAngle: userAngle || 0,
       },
     ];
 

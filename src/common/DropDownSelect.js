@@ -1,10 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "./dropDownSelect.scss";
 
-const DropDownSelect = ({ options, onChange, defaultValue }) => {
+const DropDownSelect = ({
+  options,
+  onChange,
+  defaultValue,
+  floorDirection,
+}) => {
   const [selected, setSelected] = useState(defaultValue);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    console.log(defaultValue, "manish");
+    if (defaultValue === "floor_change" && floorDirection === 0) {
+      setSelected("floor change bidirection");
+    }
+    if (defaultValue === "floor_change" && floorDirection === 1) {
+      setSelected("floor change unidirection");
+    }
+  }, [defaultValue]);
+
+  const handleChange = e => {
     const newValue = e.target.value;
     e.target.floorDirection = 0;
     e.target.nodeTypee = e.target.value;
