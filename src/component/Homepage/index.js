@@ -21,6 +21,11 @@ const Homepage = () => {
           Validate Angle's
         </button>
       </Link>
+      <Link to="/validate-trip">
+        <button className="button button--primary validate-angle">
+          Validate Trip
+        </button>
+      </Link>
     </div>
   );
 };

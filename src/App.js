@@ -12,6 +12,7 @@ import Header from "./common/Header";
 import MarketSelection from "./component/MarketSelection";
 import Snackbar from "./common/Snackbar";
 import ValidateAngle from "./component/ValidateAngle";
+import ValidateTrip from "./component/ValidateTrip";
 
 function App() {
   if (true) {
@@ -63,6 +64,15 @@ function App() {
                 <>
                   <UserMoment />
                   <ValidateAngle />
+                </>
+              }
+            />
+            <Route
+              path="/validate-trip"
+              element={
+                <>
+                  <UserMoment />
+                  <ValidateTrip />
                 </>
               }
             />

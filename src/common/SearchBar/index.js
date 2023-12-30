@@ -17,8 +17,8 @@ function SearchBar({ dataList, updateShopAngle }) {
   useEffect(() => {
     const k = [...filteredData];
     k.sort((a, b) => {
-      let nameA = a.name.toUpperCase(); // convert name to uppercase to make the comparison case-insensitive
-      let nameB = b.name.toUpperCase(); // same for nameB
+      let nameA = a?.name?.toUpperCase(); // convert name to uppercase to make the comparison case-insensitive
+      let nameB = b?.name?.toUpperCase(); // same for nameB
       if (nameA < nameB) {
         return -1; // nameA comes first
       }
