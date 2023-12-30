@@ -1,0 +1,24 @@
+// Snackbar.scss
+.snackbar {
+  padding: 16px;
+  position: fixed;
+  bottom: 30px;
+  left: 30px;
+  min-width: 250px;
+  border-radius: 4px;
+  color: white;
+  font-family: Arial, sans-serif;
+  z-index: 1000;
+  opacity: 0.9;
+  transition: all 0.3s ease;
+}
+
+.snackbar.success {
+  background-color: green;
+}
+
+.snackbar.alert {
+  background-color: red;
+}
+
+// Add more styles as needed

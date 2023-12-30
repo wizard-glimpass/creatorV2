@@ -1,0 +1,49 @@
+.carousel-container {
+  position: relative;
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  overflow: hidden;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
+
+  .carousel-wrapper {
+    display: flex;
+    transition: transform 0.5s ease;
+    &.horizontal {
+      flex-direction: row;
+    }
+
+    &.vertical {
+      flex-direction: column;
+    }
+    .carousel-slide {
+      flex: 0 0 auto;
+      width: 220px; // Assuming 3 items are visible, adjust as needed
+      opacity: 1;
+      z-index: 1;
+      text-align: center;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      height: 90px;
+      border: 1px solid #e7e2e2;
+      border-radius: 23px;
+      margin-right: 20px;
+      position: relative;
+
+      .content-wrapper {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+
+        .icon {
+          margin-right: 20px;
+          width: 50px;
+          height: 50px;
+        }
+      }
+    }
+  }
+}

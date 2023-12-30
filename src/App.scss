@@ -1,0 +1,71 @@
+// main.scss
+@import "./assets/variables";
+@import "./assets/mixins";
+
+.button {
+  a {
+    color: white;
+    text-decoration: none;
+  }
+  &--primary {
+    @include button-theme($primary-color);
+  }
+
+  &--secondary {
+    @include button-theme($secondary-color);
+  }
+
+  &--success {
+    @include button-theme($success-color);
+  }
+
+  &--warning {
+    @include button-theme($warning-color);
+  }
+}
+.action-icon {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+}
+
+@keyframes blink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.2;
+  }
+}
+.edit-mode-container {
+  .blinking-circle {
+    width: 10px; // Adjust the size as needed
+    height: 10px;
+    margin-left: 10px;
+    background-color: red;
+    border-radius: 50%; // Makes it a circle
+    animation: blink 1s infinite; // 1s duration, infinite loop
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.disable {
+  opacity: 0.4;
+}
+
+.ellipsis {
+  white-space: nowrap; /* Prevents the text from wrapping */
+  overflow: hidden; /* Hide overflowed content */
+  text-overflow: ellipsis; /* Add ellipsis to overflowed content */
+}
+.close-btn {
+  position: absolute;
+  right: 30px;
+  top: 24px;
+}

@@ -1,0 +1,21 @@
+.market-selection-container {
+  max-width: 100%;
+  .add-market {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+  }
+  .market-input {
+    margin: 20px 0;
+  }
+  .button {
+    margin: 20px 0;
+  }
+  .market-container {
+    max-width: 100%;
+    img {
+      width: 90%;
+      height:150px;
+    }
+  }
+}
