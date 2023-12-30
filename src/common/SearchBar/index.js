@@ -38,7 +38,7 @@ function SearchBar({ dataList, updateShopAngle }) {
 
     // Filter the list based on the query
     const filteredList = dataList.filter((item) =>
-      item.name.toLowerCase().includes(newQuery.toLowerCase())
+      item?.name?.toLowerCase()?.includes(newQuery?.toLowerCase())
     );
     setFilteredData(filteredList);
   };
