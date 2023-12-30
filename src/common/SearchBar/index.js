@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUpload } from "@fortawesome/free-solid-svg-icons";
+import { useNavigate } from "react-router-dom";
 
 function SearchBar({ dataList, updateShopAngle }) {
   // Sample data list
@@ -9,13 +10,22 @@ function SearchBar({ dataList, updateShopAngle }) {
   // State for the search query and filtered list
   const [query, setQuery] = useState("");
   const [filteredData, setFilteredData] = useState(dataList);
+  const navigate = useNavigate();
   useEffect(() => {
     handleInputChange({ target: { value: query } });
     // setFilteredData(dataList);
   }, [dataList]);
 
-  useEffect(() => {
-    const k = [...filteredData];
+  // Function to handle input change
+  const handleInputChange = event => {
+    const newQuery = event.target.value;
+    setQuery(newQuery);
+
+    // Filter the list based on the query
+    const filteredList = dataList.filter(item =>
+      item?.name?.toLowerCase().includes(newQuery.toLowerCase())
+    );
+    const k = [...filteredList];
     k.sort((a, b) => {
       let nameA = a?.name?.toUpperCase(); // convert name to uppercase to make the comparison case-insensitive
       let nameB = b?.name?.toUpperCase(); // same for nameB
@@ -28,19 +38,6 @@ function SearchBar({ dataList, updateShopAngle }) {
       return 0; // names are equal
     });
     setFilteredData(k);
-    // setFilteredData(dataList);
-  }, [filteredData]);
-
-  // Function to handle input change
-  const handleInputChange = (event) => {
-    const newQuery = event.target.value;
-    setQuery(newQuery);
-
-    // Filter the list based on the query
-    const filteredList = dataList.filter((item) =>
-      item?.name?.toLowerCase()?.includes(newQuery?.toLowerCase())
-    );
-    setFilteredData(filteredList);
   };
 
   return (
@@ -56,11 +53,18 @@ function SearchBar({ dataList, updateShopAngle }) {
           return (
             <div className="preview-node" key={nodes.nodeId}>
               <span>{nodes.floor}</span>
-              <p className="node-name">{nodes.name}</p>
+              <p
+                onClick={() => {
+                  navigate(`/edit-node/${nodes.nodeId}`);
+                }}
+                className="node-name"
+              >
+                {nodes.name}
+              </p>
               <span>{nodes.shop_angle}</span>
 
               <span
-                onClick={(e) => {
+                onClick={e => {
                   console.log(nodes);
                   updateShopAngle(nodes);
                 }}
