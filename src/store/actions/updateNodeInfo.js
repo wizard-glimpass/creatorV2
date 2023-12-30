@@ -3,13 +3,17 @@ import {
   UPDATE_NODE_INFO,
   UPDATE_TRIP_DATA,
   RESET_TRIP_INFO,
+  REMOVE_NODE,
 } from "../actionTypes";
 
 export const updateNodeInfo = (payload) => ({
   type: UPDATE_NODE_INFO,
   payload,
 });
-
+export const removeNodeInfo = (payload) => ({
+  type: REMOVE_NODE,
+  payload,
+});
 export const resetNodeInfo = () => ({
   type: RESET_NODE_INFO,
 });

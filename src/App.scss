@@ -3,6 +3,10 @@
 @import "./assets/mixins";
 
 .button {
+  a {
+    color: white;
+    text-decoration: none;
+  }
   &--primary {
     @include button-theme($primary-color);
   }
@@ -53,4 +57,15 @@
 
 .disable {
   opacity: 0.4;
+}
+
+.ellipsis {
+  white-space: nowrap; /* Prevents the text from wrapping */
+  overflow: hidden; /* Hide overflowed content */
+  text-overflow: ellipsis; /* Add ellipsis to overflowed content */
+}
+.close-btn {
+  position: absolute;
+  right: 30px;
+  top: 24px;
 }

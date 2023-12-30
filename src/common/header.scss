@@ -1,12 +1,22 @@
-h1 {
-  text-align: center;
-  color: darkgrey;
-  span {
-    font-size: 50px;
+.header-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  .market-selection-name {
+    width: 70px;
+    display: inline-block;
+    margin-left: 5px;
   }
-  small {
-    font-size: 15px;
-    margin-left: 10px;
-    text-decoration: underline;
+  h1 {
+    text-align: center;
+    color: darkgrey;
+    span {
+      font-size: 50px;
+    }
+    small {
+      font-size: 15px;
+      margin-left: 10px;
+      text-decoration: underline;
+    }
   }
 }

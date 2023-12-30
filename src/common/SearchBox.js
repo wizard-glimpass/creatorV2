@@ -1,5 +1,6 @@
 import React, { useState, useRef } from "react";
 import "./searchBox.scss";
+import useOutsideTap from "../hooks/useOutsideTap";
 
 function SearchBox({ data, type, onSelect }) {
   const [query, setQuery] = useState("");
@@ -21,7 +22,7 @@ function SearchBox({ data, type, onSelect }) {
   };
 
   const handleSuggestionClick = (suggestion) => {
-    setQuery(suggestion.name);
+    setQuery("");
     setActiveIndex(-1);
     setSHowDropdown(false);
     onSelect(suggestion);
@@ -50,6 +51,10 @@ function SearchBox({ data, type, onSelect }) {
   //   };
   // }, []);
 
+  useOutsideTap(ref, () => {
+    setSHowDropdown(false);
+  });
+
   return (
     <div className="searchbox-container" ref={ref}>
       <span className="field-info">Select {type} Node</span>
@@ -61,16 +66,21 @@ function SearchBox({ data, type, onSelect }) {
       />
       {showDropdown && (
         <ul>
-          {filteredData.map((suggestion, index) => (
-            <li
-              key={suggestion}
-              onClick={() => handleSuggestionClick(suggestion)}
-              className={index === activeIndex ? "active" : ""}
-            >
-              {suggestion.name}
-              <span className="align-right">{suggestion.floor}</span>
-            </li>
-          ))}
+          {filteredData.map((suggestion, index) => {
+            if (suggestion.nearBy === null)
+              return (
+                <li
+                  key={suggestion}
+                  onClick={() => handleSuggestionClick(suggestion)}
+                  className={index === activeIndex ? "active" : ""}
+                >
+                  {suggestion.altNode ? suggestion.altNode : suggestion.name}
+                  <span className="align-right">{suggestion.floor}</span>
+                </li>
+              );
+
+            return <></>;
+          })}
         </ul>
       )}
     </div>

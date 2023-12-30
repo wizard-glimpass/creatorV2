@@ -13,7 +13,7 @@ export const userMomentInitialState = {
 export const nodeInfoInitialState = {
   floor: null,
   market: "",
-  floorDirection: 1,
+  floorDirection: 0,
   shopAngle: null,
   nodeNames: [],
   nodeAltName: [],

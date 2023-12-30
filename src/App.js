@@ -11,6 +11,7 @@ import Homepage from "./component/Homepage";
 import Header from "./common/Header";
 import MarketSelection from "./component/MarketSelection";
 import Snackbar from "./common/Snackbar";
+import ValidateAngle from "./component/ValidateAngle";
 
 function App() {
   if (true) {
@@ -53,6 +54,15 @@ function App() {
                 <>
                   <UserMoment />
                   <CreateTrip />
+                </>
+              }
+            />
+            <Route
+              path="/validate-angles"
+              element={
+                <>
+                  <UserMoment />
+                  <ValidateAngle />
                 </>
               }
             />

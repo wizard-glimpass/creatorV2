@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faEdit, faClose } from "@fortawesome/free-solid-svg-icons";
 import { useDispatch, useSelector } from "react-redux";
 import SearchBox from "../../common/SearchBox";
 import { getAllNodesAction } from "../../store/actions/appMetaInfo";
@@ -17,20 +15,22 @@ import {
   updateTripDataAdd,
 } from "../../store/actions/updateNodeInfo";
 import BesideNodes from "../BesideNodes";
-import { useNavigate, Link } from "react-router-dom";
+import { Link } from "react-router-dom";
+import GifSlideshow from "../../common/GifSlideshow";
+import CheckpointIdentification from "../../common/CheckpointIdentification";
 
 export const CreateTrip = () => {
   const dispatch = useDispatch();
-  const navigate = useNavigate();
-  const [open, setOpen] = useState(true);
+  const [open, setOpen] = useState(false);
+  const [showCheckpointModal, setShowCheckpointModal] = useState(false);
   const [showBesideNodes, setShowBesideNodes] = useState(false);
   const [connectNodeModal, setConnectNodeModal] = useState(false);
   const [sourceNodeEdit, setSourceNodeEdit] = useState(false);
+  const [finalSteps, setFinalSteps] = useState(0);
 
   const handleClose = () => {
     setOpen(false);
   };
-  const [stepsEditing, setStepsEditing] = useState(false);
   const {
     userAngle,
     userSteps,
@@ -38,7 +38,7 @@ export const CreateTrip = () => {
     connectionInfo,
     resetSteps,
     tripInfo,
-  } = useSelector((state) => ({
+  } = useSelector(state => ({
     userAngle: state.userMomentReducer.angle,
     userSteps: state.userMomentReducer.steps,
     resetSteps: state.userMomentReducer.resetSteps,
@@ -66,9 +66,9 @@ export const CreateTrip = () => {
       requestOptions
     );
 
-    response.json().then((data) => {
+    response.json().then(data => {
       const allNodesData = [];
-      Object.keys(data).map((d) => {
+      Object.keys(data).map(d => {
         allNodesData.push(data[d]);
       });
       dispatch(getAllNodesAction(allNodesData));
@@ -79,20 +79,24 @@ export const CreateTrip = () => {
     getAllNodes();
   }, []);
 
+  useEffect(() => {
+    setFinalSteps(userSteps);
+  }, [userSteps]);
+
   const calculateAverageAngle = () => {
     const { angleSum: alphaSum, interval: alphaReadingsCounted } =
       averageAngleData;
     const avgX = alphaSum.cosAlphaSum / alphaReadingsCounted;
     const avgY = alphaSum.sinAlphaSum / alphaReadingsCounted;
     const avgAngle = (Math.atan2(avgY, avgX) * (180 / Math.PI) + 360) % 360;
-    setAverageAngleData((prev) => ({
+    setAverageAngleData(prev => ({
       ...prev,
       averageAngle: parseInt(avgAngle),
     }));
   };
 
   useEffect(() => {
-    setAverageAngleData((prevAngle) => {
+    setAverageAngleData(prevAngle => {
       let sumX = prevAngle.angleSum.cosAlphaSum;
       let sumY = prevAngle.angleSum.sinAlphaSum;
       let interval = prevAngle.interval + 1;
@@ -105,7 +109,7 @@ export const CreateTrip = () => {
     calculateAverageAngle();
   }, [userSteps]);
 
-  const onSelect = (selectedOption) => {
+  const onSelect = selectedOption => {
     handleClose();
     setSourceNodeEdit(false);
     dispatch(updateCurrentSource(selectedOption));
@@ -114,6 +118,19 @@ export const CreateTrip = () => {
 
   return (
     <div className="create-trip-container">
+      <button
+        onClick={() => {
+          setAverageAngleData({
+            angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
+            interval: 0,
+            averageAngle: 0,
+          });
+          setOpen(true);
+        }}
+        className="button button--primary"
+      >
+        Reset steps and angle
+      </button>
       <Modal
         isOpen={connectNodeModal}
         onClose={() => {
@@ -122,29 +139,30 @@ export const CreateTrip = () => {
       >
         {connectionInfo?.sourceNode?.name}
         <div>.</div>
-        {userSteps} - {averageAngleData.averageAngle}
+        <input
+          type="text"
+          value={finalSteps}
+          onChange={e => {
+            setFinalSteps(e.target.value);
+          }}
+        />
+        {averageAngleData.averageAngle}
         <div>.</div>
         {connectionInfo?.destinationNode?.name}
         <button
           className="button button--primary"
           onClick={() => {
-            if (tripInfo.length !== 0) {
-              dispatch(
-                updateTripDataAdd({
-                  label: "RELATED_TO",
-                  steps: userSteps,
-                  angle: averageAngleData.averageAngle,
-                })
-              );
+            if (tripInfo.length === 0) {
+              dispatch(updateTripDataAdd(connectionInfo.sourceNode));
             }
-            dispatch(updateTripDataAdd(connectionInfo.sourceNode));
             dispatch(
               updateTripDataAdd({
                 label: "RELATED_TO",
-                steps: userSteps,
+                steps: finalSteps,
                 angle: averageAngleData.averageAngle,
               })
             );
+
             dispatch(updateTripDataAdd(connectionInfo.destinationNode));
 
             dispatch(updateCurrentSource(connectionInfo.destinationNode));
@@ -161,6 +179,20 @@ export const CreateTrip = () => {
           connect
         </button>
       </Modal>
+      <Modal isOpen={open} onClose={handleClose}>
+        <GifSlideshow
+          requestPermission={() => {
+            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
+            setOpen(false);
+            delete window.calibrateOffset;
+          }}
+        />
+      </Modal>
+      {showCheckpointModal && (
+        <CheckpointIdentification
+          setShowCheckpointModal={setShowCheckpointModal}
+        />
+      )}
       {showBesideNodes && (
         <Modal
           isOpen
@@ -194,63 +226,26 @@ export const CreateTrip = () => {
           {averageAngleData.averageAngle}
           <span className="field-info">Average angle</span>
         </div>
-        {stepsEditing ? (
-          <div className="user-angle-container">
-            <span className="field-info">Total steps</span>
-            <button
-              onClick={() => {
-                setStepsEditing(false);
-                //   dispatch(changeFloor(floorValue));
-              }}
-              className="action-icon"
-            >
-              <FontAwesomeIcon icon={faClose} />
-            </button>
-            <input
-              type="number"
-              value={userSteps}
-              onChange={(event) => {
-                dispatch(
-                  updateUserMoment({ steps: parseInt(event.target.value) })
-                );
-              }}
-            />
-          </div>
-        ) : (
-          <div className="user-angle-container">
-            <span className="field-info">Total steps</span>
-            {userSteps}
-            <button
-              onClick={() => {
-                setStepsEditing(true);
-              }}
-              className="action-icon"
-            >
-              <FontAwesomeIcon icon={faEdit} />
-            </button>
-          </div>
-        )}
+
+        <div className="user-angle-container">
+          <span className="field-info">Total steps</span>
+          {userSteps}
+        </div>
       </div>
 
       <SearchBox
-        onSelect={(selectedOption) => {
+        onSelect={selectedOption => {
           handleClose();
           dispatch(updateDestinationNode(selectedOption));
+          setConnectNodeModal(true);
         }}
         type="Destination"
         data={allNodesData}
       />
-      <button
-        className="button button--primary"
-        onClick={() => {
-          setConnectNodeModal(true);
-        }}
-      >
-        Add connection
-      </button>
 
       <button
         onClick={() => {
+          setShowCheckpointModal(true);
           dispatch(
             updateTripDataAdd({
               label: "RELATED_TO",
@@ -278,9 +273,9 @@ export const CreateTrip = () => {
       >
         Add checkpoint
       </button>
-      <Link to="/preview-trip">
-        <button className="button button--primary">Preview trip</button>
-      </Link>
+      <button className="button button--primary">
+        <Link to="/preview-trip">Preview trip</Link>
+      </button>
       <button
         onClick={() => {
           setShowBesideNodes(true);

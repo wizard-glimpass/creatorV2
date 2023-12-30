@@ -6,10 +6,13 @@ const DropDownSelect = ({ options, onChange, defaultValue }) => {
 
   const handleChange = (e) => {
     const newValue = e.target.value;
-    console.log(e.target.value, "manish");
     e.target.floorDirection = 0;
+    e.target.nodeTypee = e.target.value;
     if (newValue === "floor change unidirection") {
       e.target.floorDirection = 1;
+      e.target.nodeTypee = "floor_change";
+    } else if (newValue === "floor change bidirection") {
+      e.target.nodeTypee = "floor_change";
     }
     setSelected(newValue);
     if (onChange) {

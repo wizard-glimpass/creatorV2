@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faHome } from "@fortawesome/free-solid-svg-icons";
@@ -12,14 +12,16 @@ import {
 import { resetConnections } from "../../store/actions/connectionInfo";
 
 const PreviewTrip = ({ disable = false }) => {
+  const [disableState, setDisableState] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { tripInfo } = useSelector((state) => ({
+  const { tripInfo } = useSelector(state => ({
     tripInfo: state.tripInfoReducer,
   }));
 
   const confirmTrip = async () => {
     try {
+      setDisableState(true);
       const resp = tripInfo;
       const requestOptions = {
         method: "POST",
@@ -27,11 +29,14 @@ const PreviewTrip = ({ disable = false }) => {
         body: JSON.stringify(resp),
       };
       await fetch("https://app.glimpass.com/graph/create", requestOptions);
+
       dispatch(showSnackbar("Trip added successfully!", "success"));
       dispatch(resetTripInfo());
       dispatch(resetConnections());
     } catch (err) {
       dispatch(showSnackbar("This is a error!", "alert"));
+    } finally {
+      setDisableState(false);
     }
   };
 
@@ -39,15 +44,7 @@ const PreviewTrip = ({ disable = false }) => {
   return (
     <>
       {tripInfo.map((nodes, index) => {
-        if (nodes?.nodeType === "shop")
-          return (
-            <div className="preview-node">
-              <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
-
-              <p className="node-name">{nodes.name}</p>
-            </div>
-          );
-        else if (nodes?.nodeType === "checkpoint")
+        if (nodes?.nodeType === "checkpoint") {
           return (
             <div className="preview-node">
               <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
@@ -55,12 +52,23 @@ const PreviewTrip = ({ disable = false }) => {
               <p className="node-name">{JSON.stringify(nodes.name)}</p>
             </div>
           );
+        } else if (nodes?.nodeType) {
+          return (
+            <div className="preview-node">
+              <FontAwesomeIcon icon={faHome} size="3x" className="icon" />
+
+              <p className="node-name">{nodes.name}</p>
+            </div>
+          );
+        }
         return <></>;
       })}
       <div className="action-btn-container">
         <button
           onClick={confirmTrip}
-          className={`${disable ? "disable" : ""} button button--primary`}
+          className={`${
+            disable || disableState ? "disable" : ""
+          } button button--primary`}
         >
           Add Trip to {window.sessionStorage.getItem("marketVal")}
         </button>
