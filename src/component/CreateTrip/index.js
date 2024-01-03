@@ -113,7 +113,7 @@ export const CreateTrip = () => {
     handleClose();
     setSourceNodeEdit(false);
     dispatch(updateCurrentSource(selectedOption));
-    // dispatch(updateTripDataAdd(selectedOption));
+    dispatch(updateTripDataAdd(selectedOption));
   };
 
   return (

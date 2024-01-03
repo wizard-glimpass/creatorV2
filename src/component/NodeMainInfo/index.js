@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./nodeMainInfo.scss";
@@ -16,15 +16,19 @@ import Chips from "../../common/Chips";
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
   const [shopAngle, setShopAngle] = useState();
+  const [showDropdown, setSHowDropdown] = useState(false);
   const [shopAngleEditing, setShopAngleEditing] = useState(true);
   const nodeNameRef = useRef();
   const nodeAltNameRef = useRef();
 
-  const { userAngle, currentFloor, currentNodeInfo } = useSelector((state) => ({
-    userAngle: state.userMomentReducer.angle,
-    currentFloor: state.appMetaInfoReducer.currentFloor,
-    currentNodeInfo: state.nodeInfoReducer,
-  }));
+  const { userAngle, currentFloor, currentNodeInfo, allNodeInfo } = useSelector(
+    (state) => ({
+      userAngle: state.userMomentReducer.angle,
+      currentFloor: state.appMetaInfoReducer.currentFloor,
+      currentNodeInfo: state.nodeInfoReducer,
+      allNodeInfo: state.appMetaInfoReducer.allNodes,
+    })
+  );
 
   const [nodeInfo, setNodeInfo] = useState({
     nodeNames: [],
@@ -45,6 +49,16 @@ const NodeMainInfo = () => {
     altName,
     nearbyNodeFlag,
   } = nodeInfo;
+
+  const filteredData = useMemo(
+    () =>
+      allNodeInfo.filter((item) =>
+        item?.name?.toLowerCase()?.includes(nodeName?.toLowerCase())
+      ),
+    [allNodeInfo, nodeName]
+  );
+
+  console.log(filteredData, "manish");
 
   const saveShopAngle = () => {
     setShopAngleEditing(false);
@@ -172,12 +186,37 @@ const NodeMainInfo = () => {
             placeholder="Enter node name"
             value={nodeName}
             onChange={(event) => {
+              if (event.target.value) {
+                setSHowDropdown(true);
+              } else {
+                setSHowDropdown(false);
+              }
               setNodeInfo((prev) => ({
                 ...prev,
                 nodeName: event.target.value,
               }));
             }}
           />
+          {showDropdown && (
+            <ul>
+              {filteredData.map((suggestion) => {
+                if (suggestion.nearBy === null)
+                  return (
+                    <li
+                      style={{ color: "black", fontSize: "15px" }}
+                      key={suggestion}
+                    >
+                      {suggestion.altNode
+                        ? suggestion.altNode
+                        : suggestion.name}
+                      <span className="align-right">{suggestion.floor}</span>
+                    </li>
+                  );
+
+                return <></>;
+              })}
+            </ul>
+          )}
         </div>
       ) : (
         <div

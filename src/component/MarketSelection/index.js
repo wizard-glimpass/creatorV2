@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { updateNodeInfo } from "../../store/actions/updateNodeInfo";
 import { showSnackbar } from "../../store/actions/snackBar";
+import { getAllNodesAction } from "../../store/actions/appMetaInfo";
 
 const MarketSelection = () => {
   const [marketName, setMarketName] = useState("");
@@ -36,13 +37,32 @@ const MarketSelection = () => {
         city: "delhi",
       }),
     };
-    await fetch(
-      `https://app.glimpass.com/graph/add-market`,
-      requestOptions
-    );
+    await fetch(`https://app.glimpass.com/graph/add-market`, requestOptions);
     dispatch(showSnackbar("Market added successfully!", "success"));
     setModalOpen(false);
     getAllMarkets();
+  };
+  const getAllNodes = async () => {
+    const requestOptions = {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        market: window.sessionStorage.getItem("marketVal"),
+      }),
+    };
+    const response = await fetch(
+      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
+      requestOptions
+    );
+
+    response.json().then((data) => {
+      const allNodesData = [];
+      Object.keys(data).map((d) => {
+        allNodesData.push(data[d]);
+      });
+      dispatch(getAllNodesAction(allNodesData));
+      navigate("/");
+    });
   };
 
   useEffect(() => {
@@ -68,8 +88,7 @@ const MarketSelection = () => {
                 market: window.sessionStorage.getItem("marketVal"),
               })
             );
-
-            navigate("/");
+            getAllNodes();
           }}
           key={mall?.name}
           className="market-container"
