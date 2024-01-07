@@ -210,6 +210,10 @@ export const nodeType = [
     "meta-direction": 0,
     meta_type: "floor_change",
   },
+  {
+    name: "Lift",
+    value: "floor_change_lift",
+  },
 ];
 
 export const shopExpensive = [

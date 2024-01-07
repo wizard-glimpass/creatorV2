@@ -38,7 +38,7 @@ export const CreateTrip = () => {
     connectionInfo,
     resetSteps,
     tripInfo,
-  } = useSelector(state => ({
+  } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
     userSteps: state.userMomentReducer.steps,
     resetSteps: state.userMomentReducer.resetSteps,
@@ -66,9 +66,9 @@ export const CreateTrip = () => {
       requestOptions
     );
 
-    response.json().then(data => {
+    response.json().then((data) => {
       const allNodesData = [];
-      Object.keys(data).map(d => {
+      Object.keys(data).map((d) => {
         allNodesData.push(data[d]);
       });
       dispatch(getAllNodesAction(allNodesData));
@@ -89,14 +89,14 @@ export const CreateTrip = () => {
     const avgX = alphaSum.cosAlphaSum / alphaReadingsCounted;
     const avgY = alphaSum.sinAlphaSum / alphaReadingsCounted;
     const avgAngle = (Math.atan2(avgY, avgX) * (180 / Math.PI) + 360) % 360;
-    setAverageAngleData(prev => ({
+    setAverageAngleData((prev) => ({
       ...prev,
       averageAngle: parseInt(avgAngle),
     }));
   };
 
   useEffect(() => {
-    setAverageAngleData(prevAngle => {
+    setAverageAngleData((prevAngle) => {
       let sumX = prevAngle.angleSum.cosAlphaSum;
       let sumY = prevAngle.angleSum.sinAlphaSum;
       let interval = prevAngle.interval + 1;
@@ -109,7 +109,7 @@ export const CreateTrip = () => {
     calculateAverageAngle();
   }, [userSteps]);
 
-  const onSelect = selectedOption => {
+  const onSelect = (selectedOption) => {
     handleClose();
     setSourceNodeEdit(false);
     dispatch(updateCurrentSource(selectedOption));
@@ -142,7 +142,7 @@ export const CreateTrip = () => {
         <input
           type="text"
           value={finalSteps}
-          onChange={e => {
+          onChange={(e) => {
             setFinalSteps(e.target.value);
           }}
         />
@@ -234,7 +234,7 @@ export const CreateTrip = () => {
       </div>
 
       <SearchBox
-        onSelect={selectedOption => {
+        onSelect={(selectedOption) => {
           handleClose();
           dispatch(updateDestinationNode(selectedOption));
           setConnectNodeModal(true);
@@ -257,7 +257,7 @@ export const CreateTrip = () => {
           dispatch(
             updateTripDataAdd({
               floor: connectionInfo.sourceNode?.floor,
-              market: "test",
+              market: window.sessionStorage?.getItem("marketVal") || "",
               name: new Date(),
               nodeType: "checkpoint",
             })
