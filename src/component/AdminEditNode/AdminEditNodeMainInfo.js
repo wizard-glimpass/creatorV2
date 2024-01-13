@@ -21,7 +21,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
   const [shopAngle, setShopAngle] = useState(currentNodeInfo.shopAngle);
   const [shopAngleEditing, setShopAngleEditing] = useState(false);
 
-  const { userAngle } = useSelector(state => ({
+  const { userAngle } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
   }));
 
@@ -52,9 +52,9 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
       requestOptions
     );
 
-    response.json().then(data => {
+    response.json().then((data) => {
       const allNodesData = [];
-      Object.keys(data).map(d => {
+      Object.keys(data).map((d) => {
         allNodesData.push(data[d]);
       });
       dispatch(getAllNodesAction(allNodesData));
@@ -66,7 +66,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
     dispatch(updateNodeInfo({ shopAngle: shopAngle }));
   };
 
-  const handleDropdownChange = event => {
+  const handleDropdownChange = (event) => {
     const tempNodeInfo = {
       ...currentNodeInfo,
       nodeType: event.target.nodeTypee,
@@ -82,7 +82,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
     }
   }, [userAngle]);
 
-  const updateShopAngleReq = async payload => {
+  const updateShopAngleReq = async (payload) => {
     try {
       const requestOptions = {
         method: "POST",
@@ -101,14 +101,14 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
     }
   };
 
-  const updateShopAngle = node => {
+  const updateShopAngle = (node) => {
     console.log(node, "test");
     const payload = [
       {
         ...node,
         nodeNames: [node.name],
         nodeAltName: [node.altNode],
-        shopAngle: shopAngle || 12,
+        shopAngle: shopAngle || 0,
       },
     ];
 
@@ -122,7 +122,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
         <span className="field-info">Current shop angle</span>
         <button className="action-icon">
           <FontAwesomeIcon
-            onClick={event => {
+            onClick={(event) => {
               event.stopPropagation();
               setShopAngleEditing(true);
             }}
@@ -136,7 +136,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
           <button className="action-icon">
             <FontAwesomeIcon
               onClick={() => {
-                setNodeInfo(prev => ({
+                setNodeInfo((prev) => ({
                   ...prev,
                   nodeNameEditing: false,
                 }));
@@ -154,8 +154,8 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
             type="text"
             placeholder="Enter node name"
             value={name}
-            onChange={event => {
-              setNodeInfo(prev => ({
+            onChange={(event) => {
+              setNodeInfo((prev) => ({
                 ...prev,
                 name: event.target.value,
               }));
@@ -169,7 +169,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
           <button className="action-icon">
             <FontAwesomeIcon
               onClick={() => {
-                setNodeInfo(prev => ({
+                setNodeInfo((prev) => ({
                   ...prev,
                   showAltName: true,
                 }));
@@ -179,7 +179,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
             />
             <FontAwesomeIcon
               onClick={() => {
-                setNodeInfo(prev => ({
+                setNodeInfo((prev) => ({
                   ...prev,
                   nodeNameEditing: true,
                 }));
@@ -196,8 +196,8 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
             type="text"
             placeholder="Enter alt node name"
             value={altNode}
-            onChange={event => {
-              setNodeInfo(prev => ({
+            onChange={(event) => {
+              setNodeInfo((prev) => ({
                 ...prev,
                 altNode: event.target.value,
               }));
@@ -206,7 +206,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
           <button className="action-icon">
             <FontAwesomeIcon
               onClick={() => {
-                setNodeInfo(prev => ({
+                setNodeInfo((prev) => ({
                   ...prev,
                   showAltName: false,
                 }));

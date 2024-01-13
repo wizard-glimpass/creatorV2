@@ -143,7 +143,7 @@ export const CreateTrip = () => {
           type="text"
           value={finalSteps}
           onChange={(e) => {
-            setFinalSteps(e.target.value);
+            setFinalSteps(parseInt(e.target.value) || 0);
           }}
         />
         {averageAngleData.averageAngle}
