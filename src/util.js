@@ -222,3 +222,22 @@ export const shopExpensive = [
   { label: "$$$" },
   // more data items
 ];
+
+export const validateAndModifyData = (data) => {
+  console.log(data, "paras");
+  const { nodeNames, nodeAltName } = data;
+
+  for (let i = 0; i < nodeNames.length; i++) {
+    nodeNames[i] = nodeNames[i].trim();
+    nodeAltName[i] = nodeAltName[i].trim();
+  }
+
+  // Determine if the data is valid
+  const isValid = true;
+
+  // Return an object containing both isValid and modifiedData
+  return {
+    isValid,
+    modifyData: data,
+  };
+};

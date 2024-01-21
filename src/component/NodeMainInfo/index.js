@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import DropDownSelect from "../../common/DropDownSelect";
 import "./nodeMainInfo.scss";
-import { nodeType, shopExpensive } from "../../util";
+import { nodeType, shopExpensive, validateAndModifyData } from "../../util";
 import {
   resetNodeInfo,
   updateNodeInfo,
@@ -98,16 +98,19 @@ const NodeMainInfo = () => {
     const l = altName?.length > 0 ? altName : nodeName;
     tempo.push(l);
 
-    dispatch(
-      updateTripDataAdd({
-        ...currentNodeInfo,
-        nodeNames: temp,
-        nodeAltName: tempo,
-        floor: currentFloor,
-        nodeType: nodeInfo.nodeType,
-        shopAngle: shopAngle,
-      })
-    );
+    const payloadData = {
+      ...currentNodeInfo,
+      nodeNames: temp,
+      nodeAltName: tempo,
+      floor: currentFloor,
+      nodeType: nodeInfo.nodeType,
+      shopAngle: shopAngle,
+    };
+    const { isValid, modifyData } = validateAndModifyData(payloadData);
+
+    console.log(modifyData, "manish");
+
+    dispatch(updateTripDataAdd(modifyData));
     dispatch(resetNodeInfo());
     setNodeInfo({
       nodeNames: [],

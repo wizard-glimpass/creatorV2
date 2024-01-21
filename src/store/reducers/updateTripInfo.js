@@ -10,10 +10,9 @@ export const updateTripInfoReducer = (state = [], action) => {
       return tempState;
 
     case REMOVE_NODE:
-      console.log(action);
       const newTripInfo = [...action.payload.tripInfo];
       newTripInfo.splice(action.payload.index, 1);
-      console.log(newTripInfo);
+
       return newTripInfo;
 
     case RESET_TRIP_INFO:
