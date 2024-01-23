@@ -116,6 +116,32 @@ export const CreateTrip = () => {
     dispatch(updateTripDataAdd(selectedOption));
   };
 
+  const parentCallback = (imageData) => {
+    dispatch(
+      updateTripDataAdd({
+        label: "RELATED_TO",
+        steps: userSteps,
+        angle: averageAngleData.averageAngle,
+      })
+    );
+
+    dispatch(
+      updateTripDataAdd({
+        floor: connectionInfo.sourceNode?.floor,
+        market: window.sessionStorage?.getItem("marketVal") || "",
+        name: new Date(),
+        nodeType: "checkpoint",
+        imageUrl: imageData,
+      })
+    );
+    dispatch(updateUserMoment({ resetSteps: !resetSteps }));
+    setAverageAngleData({
+      angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
+      interval: 0,
+      averageAngle: 0,
+    });
+    setShowCheckpointModal(false);
+  };
   return (
     <div className="create-trip-container">
       <button
@@ -191,6 +217,7 @@ export const CreateTrip = () => {
       {showCheckpointModal && (
         <CheckpointIdentification
           setShowCheckpointModal={setShowCheckpointModal}
+          parentCallback={parentCallback}
         />
       )}
       {showBesideNodes && (
@@ -246,28 +273,6 @@ export const CreateTrip = () => {
       <button
         onClick={() => {
           setShowCheckpointModal(true);
-          dispatch(
-            updateTripDataAdd({
-              label: "RELATED_TO",
-              steps: userSteps,
-              angle: averageAngleData.averageAngle,
-            })
-          );
-
-          dispatch(
-            updateTripDataAdd({
-              floor: connectionInfo.sourceNode?.floor,
-              market: window.sessionStorage?.getItem("marketVal") || "",
-              name: new Date(),
-              nodeType: "checkpoint",
-            })
-          );
-          dispatch(updateUserMoment({ resetSteps: !resetSteps }));
-          setAverageAngleData({
-            angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
-            interval: 0,
-            averageAngle: 0,
-          });
         }}
         className="button button--secondary"
       >

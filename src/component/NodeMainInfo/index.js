@@ -12,11 +12,13 @@ import Carousel from "../../common/Carousel";
 import { Link } from "react-router-dom";
 import useOutsideTap from "../../hooks/useOutsideTap";
 import Chips from "../../common/Chips";
+import CheckpointIdentification from "../../common/CheckpointIdentification";
 
 const NodeMainInfo = () => {
   const dispatch = useDispatch();
   const [shopAngle, setShopAngle] = useState();
   const [showDropdown, setSHowDropdown] = useState(false);
+  const [showCheckpointModal, setShowCheckpointModal] = useState(false);
   const [shopAngleEditing, setShopAngleEditing] = useState(true);
   const nodeNameRef = useRef();
   const nodeAltNameRef = useRef();
@@ -164,6 +166,11 @@ const NodeMainInfo = () => {
     console.log("Chip clicked:", item);
   };
 
+  const parentCallback = (imageData) => {
+    dispatch(updateNodeInfo({ imageUrl: imageData }));
+    setShowCheckpointModal(false);
+  };
+
   return (
     <>
       {/* <div onClick={saveShopAngle} className="user-angle-container">
@@ -179,6 +186,12 @@ const NodeMainInfo = () => {
           />
         </button>
       </div> */}
+      {showCheckpointModal && (
+        <CheckpointIdentification
+          setShowCheckpointModal={setShowCheckpointModal}
+          parentCallback={parentCallback}
+        />
+      )}
       {nodeNameEditing ? (
         <div className="user-angle-container">
           <span className="field-info">Node name</span>
@@ -307,6 +320,14 @@ const NodeMainInfo = () => {
         />
       </div>
       <Chips data={shopExpensive} onChipClick={handleChipClick} />
+      <button
+        onClick={() => {
+          setShowCheckpointModal(true);
+        }}
+        className="button button--secondary"
+      >
+        Add Image
+      </button>
       <Carousel direction="horizontal" items={currentNodeInfo.nodeNames} />
     </>
   );
