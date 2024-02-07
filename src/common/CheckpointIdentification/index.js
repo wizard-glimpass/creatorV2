@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import imageCompression from "browser-image-compression";
 import Modal from "../Modal";
 import "./checkpointIdentification.scss";
 import { useDispatch } from "react-redux";
@@ -7,8 +8,10 @@ import { showSnackbar } from "../../store/actions/snackBar";
 const CheckpointIdentification = ({
   setShowCheckpointModal,
   parentCallback,
+  imageFor = "shops",
 }) => {
   const [isModalOpen, setIsModalOpen] = useState(true);
+  const [compressedImage, setCompressedImage] = useState("");
   const [text, setText] = useState("");
   const [image, setImage] = useState(null);
   const dispatch = useDispatch();
@@ -30,31 +33,48 @@ const CheckpointIdentification = ({
     }
   };
 
-  const uploadImage = () => {
+  const uploadImage = async () => {
     if (!image) {
       parentCallback();
       return;
     }
 
-    const formData = new FormData();
-    formData.append("file", image);
-    formData.append("folderName", "shops");
+    if (image) {
+      const options = {
+        maxSizeMB: 0.5, // (Optional) Maximum file size in MB
+        maxWidthOrHeight: 1920, // (Optional) Compressed image's maximum dimension in pixels
+        useWebWorker: true, // (Optional) Use a web worker for better performance
+        convertToWebp: true, // Convert image to WebP format
+      };
+      try {
+        const compressedFile = await imageCompression(image, options);
+        console.log(compressedFile, "manish");
+        console.log(image, "manish");
 
-    fetch("https://app.glimpass.com/graph/upload", {
-      method: "POST",
+        const formData = new FormData();
 
-      body: formData,
-    })
-      .then((response) => response.json())
-      .then((data) => {
-        parentCallback(data);
-        dispatch(showSnackbar(data, "success"));
+        formData.append("file", compressedFile, `${image.name}.webp`);
+        formData.append("folderName", imageFor);
+        fetch("https://app.glimpass.com/graph/upload", {
+          method: "POST",
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            parentCallback(data);
+            dispatch(showSnackbar(data, "success"));
 
-        // You can call parentCallback or perform other actions based on the response
-      })
-      .catch((error) => {
-        dispatch(showSnackbar(error, "alert"));
-      });
+            // You can call parentCallback or perform other actions based on the response
+          })
+          .catch((error) => {
+            dispatch(showSnackbar(error, "alert"));
+          });
+
+        // 'compressedFile' is a Blob and can be uploaded to S3
+      } catch (error) {
+        console.error(error);
+      }
+    }
   };
 
   return (

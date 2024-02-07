@@ -6,9 +6,12 @@ import { useDispatch } from "react-redux";
 import { updateNodeInfo } from "../../store/actions/updateNodeInfo";
 import { showSnackbar } from "../../store/actions/snackBar";
 import { getAllNodesAction } from "../../store/actions/appMetaInfo";
+import CheckpointIdentification from "../../common/CheckpointIdentification";
 
 const MarketSelection = () => {
   const [marketName, setMarketName] = useState("");
+  const [marketImageUrl, setMarketImageUrl] = useState("");
+  const [showCheckpointModal, setShowCheckpointModal] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [malls, setMalls] = useState([]);
   const navigate = useNavigate();
@@ -28,6 +31,11 @@ const MarketSelection = () => {
     setMalls(allMarkets);
   };
 
+  const parentCallback = (imageData) => {
+    setMarketImageUrl(imageData);
+    setShowCheckpointModal(false);
+  };
+
   const addMarket = async () => {
     const requestOptions = {
       method: "POST",
@@ -35,6 +43,7 @@ const MarketSelection = () => {
       body: JSON.stringify({
         name: marketName,
         city: "delhi",
+        imageUrl: marketImageUrl,
       }),
     };
     await fetch(`https://app.glimpass.com/graph/add-market`, requestOptions);
@@ -112,8 +121,23 @@ const MarketSelection = () => {
           value={marketName}
           placeholder="Enter market name"
         />
+
+        <button
+          onClick={() => {
+            setShowCheckpointModal(true);
+          }}
+        >
+          Upload image
+        </button>
         <button onClick={addMarket}>Add</button>
       </Modal>
+      {showCheckpointModal && (
+        <CheckpointIdentification
+          parentCallback={parentCallback}
+          setShowCheckpointModal={() => {}}
+          imageFor="market"
+        />
+      )}
     </div>
   );
 };

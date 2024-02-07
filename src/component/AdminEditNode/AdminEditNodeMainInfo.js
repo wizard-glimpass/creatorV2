@@ -14,13 +14,14 @@ import { nodeType } from "../../util";
 import { updateNodeInfo } from "../../store/actions/updateNodeInfo";
 import { Link } from "react-router-dom";
 import { showSnackbar } from "../../store/actions/snackBar";
+import CheckpointIdentification from "../../common/CheckpointIdentification";
 
 const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
   console.log(currentNodeInfo, "manish");
   const dispatch = useDispatch();
-  const [shopAngle, setShopAngle] = useState(currentNodeInfo.shopAngle);
+  const [shopAngle, setShopAngle] = useState(currentNodeInfo.shop_angle);
   const [shopAngleEditing, setShopAngleEditing] = useState(false);
-
+  const [showCheckpointModal, setShowCheckpointModal] = useState(false);
   const { userAngle } = useSelector((state) => ({
     userAngle: state.userMomentReducer.angle,
   }));
@@ -36,9 +37,12 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
       ...currentNodeInfo,
     });
   }, [currentNodeInfo]);
-  const { name, nodeNameEditing, showAltName, altNode } = nodeInfo;
+  const { name, nodeNameEditing, showAltName, altNode, imageUrl } = nodeInfo;
   console.log(nodeInfo, "manish");
 
+  useEffect(() => {
+    setShopAngle(currentNodeInfo?.shop_angle);
+  }, [currentNodeInfo?.shop_angle]);
   const getAllNodes = async () => {
     const requestOptions = {
       method: "POST",
@@ -115,8 +119,21 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
     updateShopAngleReq(payload);
   };
 
+  const parentCallback = (imageData) => {
+    dispatch(updateNodeInfo({ imageUrl: imageData }));
+    setShowCheckpointModal(false);
+  };
+
+  console.log(showCheckpointModal, "paras");
+  console.log(shopAngle, "manish angle");
   return (
     <>
+      {showCheckpointModal && (
+        <CheckpointIdentification
+          setShowCheckpointModal={setShowCheckpointModal}
+          parentCallback={parentCallback}
+        />
+      )}
       <div onClick={saveShopAngle} className="user-angle-container">
         {shopAngle}
         <span className="field-info">Current shop angle</span>
@@ -203,6 +220,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
               }));
             }}
           />
+
           <button className="action-icon">
             <FontAwesomeIcon
               onClick={() => {
@@ -224,6 +242,29 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
       {altNode?.length > 0 && !showAltName && (
         <div className="user-angle-container">{altNode}</div>
       )}
+      <div className="user-angle-container">
+        <span className="field-info">Node sub type</span>
+        <DropDownSelect
+          defaultValue={currentNodeInfo.nodeType}
+          floorDirection={currentNodeInfo.floorDirection}
+          options={nodeType}
+          onChange={handleDropdownChange}
+        />
+      </div>
+      {imageUrl && <img src={imageUrl} height="300" width="300" />}
+      <div>
+        <button
+          onClick={() => {
+            setShowCheckpointModal(true);
+          }}
+          className="button button--secondary"
+        >
+          Edit Image
+        </button>
+      </div>
+      <br />
+      <br />
+
       <div className="action-btn-container">
         <Link to="/validate-angles">
           <button className="button button--primary">Back</button>
@@ -237,15 +278,6 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
         >
           Update
         </button>
-      </div>
-      <div className="user-angle-container">
-        <span className="field-info">Node sub type</span>
-        <DropDownSelect
-          defaultValue={currentNodeInfo.nodeType}
-          floorDirection={currentNodeInfo.floorDirection}
-          options={nodeType}
-          onChange={handleDropdownChange}
-        />
       </div>
     </>
   );
