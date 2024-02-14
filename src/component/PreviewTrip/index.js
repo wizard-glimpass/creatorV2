@@ -15,9 +15,30 @@ const PreviewTrip = ({ disable = false }) => {
   const [disableState, setDisableState] = useState(false);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const { tripInfo } = useSelector(state => ({
+  const { tripInfo } = useSelector((state) => ({
     tripInfo: state.tripInfoReducer,
   }));
+
+  // const confirmTrip = async () => {
+  //   try {
+  //     setDisableState(true);
+  //     const resp = tripInfo;
+  //     const requestOptions = {
+  //       method: "POST",
+  //       headers: { "Content-Type": "application/json" },
+  //       body: JSON.stringify(resp),
+  //     };
+  //     await fetch("https://app.glimpass.com/graph/create", requestOptions);
+
+  //     dispatch(showSnackbar("Trip added successfully!", "success"));
+  //     dispatch(resetTripInfo());
+  //     dispatch(resetConnections());
+  //   } catch (err) {
+  //     dispatch(showSnackbar("This is a error!", "alert"));
+  //   } finally {
+  //     setDisableState(false);
+  //   }
+  // };
 
   const confirmTrip = async () => {
     try {
@@ -28,13 +49,25 @@ const PreviewTrip = ({ disable = false }) => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(resp),
       };
-      await fetch("https://app.glimpass.com/graph/create", requestOptions);
+      const response = await fetch(
+        "https://app.glimpass.com/graph/create",
+        requestOptions
+      );
+
+      if (!response.ok) {
+        // Check if response is outside 200-299 range
+        const errorData = await response.json(); // Assuming the server responds with error details in JSON format
+        const errorMessage =
+          errorData.message || "An error occurred while adding the trip."; // Customize error message based on API response or use a default message
+        throw new Error(errorMessage); // Throw error to be caught in catch block
+      }
 
       dispatch(showSnackbar("Trip added successfully!", "success"));
       dispatch(resetTripInfo());
       dispatch(resetConnections());
     } catch (err) {
-      dispatch(showSnackbar("This is a error!", "alert"));
+      // Use the error message from the thrown error or a generic error message
+      dispatch(showSnackbar(err.message || "This is an error!", "alert"));
     } finally {
       setDisableState(false);
     }
