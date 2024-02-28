@@ -2,9 +2,16 @@ import React, { useEffect, useRef, useState } from "react";
 import Modal from "../common/Modal";
 import GifSlideshow from "../common/GifSlideshow";
 import { inertialFrame, requestPermission } from "../util";
-import { requestPermission as requestPermissionAction } from "../store/actions/appMetaInfo";
+import {
+  getAllNodesAction,
+  requestPermission as requestPermissionAction,
+  setCalibrateShop,
+} from "../store/actions/appMetaInfo";
 import { useDispatch, useSelector } from "react-redux";
 import { updateUserMoment } from "../store/actions/userMoment";
+import SearchBox from "../common/SearchBox";
+
+window.calibrateShopAngle = 0;
 
 export const UserMoment = () => {
   // handlemotionvariables
@@ -37,14 +44,21 @@ export const UserMoment = () => {
   const [final_speed, setFinalSpeed] = useState(0);
 
   //handlemotionvariables
-  const { permissionGranted, resetSteps } = useSelector(state => ({
-    permissionGranted: state.appMetaInfoReducer.permissionGranted,
-    resetSteps: state.userMomentReducer.resetSteps,
-  }));
+  const { permissionGranted, resetSteps, allNodesData, calibrateShop } =
+    useSelector(state => ({
+      permissionGranted: state.appMetaInfoReducer.permissionGranted,
+      resetSteps: state.userMomentReducer.resetSteps,
+      allNodesData: state.appMetaInfoReducer.allNodes,
+      calibrateShop: state.appMetaInfoReducer.calibrateShop,
+    }));
 
   useEffect(() => {
     steps.current = 0;
   }, [resetSteps]);
+
+  useEffect(() => {
+    window.calibrateShopAngle = calibrateShop?.shop_angle;
+  }, [calibrateShop]);
 
   const permissionGrantedRef = useRef(permissionGranted);
   const dirRef = useRef({ alpha: 0, beta: 0, gamma: 0 });
@@ -67,7 +81,11 @@ export const UserMoment = () => {
       window.calibrateOffset = -1 * dirRef.current.alpha;
     }
     window.calibrateAlpha =
-      (360 + dirRef.current.alpha + window.calibrateOffset) % 360;
+      (360 +
+        dirRef.current.alpha +
+        window.calibrateOffset +
+        window.calibrateShopAngle) %
+      360;
 
     dispatch(updateUserMoment({ angle: window.calibrateAlpha }));
   };
@@ -244,6 +262,15 @@ export const UserMoment = () => {
         requestPermission={() => {
           requestPermission({ handleOrientation, handleMotion });
         }}
+      />
+      {/* <SearchBox onSelect={onSelect} type="Source" data={allNodesData} /> */}
+      <SearchBox
+        onSelect={selectOptions => {
+          requestPermission({ handleOrientation, handleMotion });
+          dispatch(setCalibrateShop(selectOptions));
+        }}
+        type="calibrateSource"
+        data={allNodesData}
       />
     </Modal>
   );

@@ -1,4 +1,5 @@
 import {
+  CALIBRATED_SHOP,
   CHANGE_FLOOR,
   GET_ALL_NODES,
   REQUEST_PERMISSION,
@@ -21,6 +22,12 @@ export const appMetaInfoReducer = (state = appMetaInfoInitialState, action) => {
       return {
         ...state,
         allNodes: action.payload,
+      };
+
+    case `${CALIBRATED_SHOP}`:
+      return {
+        ...state,
+        calibrateShop: action.payload,
       };
 
     default:

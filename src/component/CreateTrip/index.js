@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import SearchBox from "../../common/SearchBox";
-import { getAllNodesAction } from "../../store/actions/appMetaInfo";
 import "./createTrip.scss";
 import Modal from "../../common/Modal";
 import {
@@ -38,7 +37,7 @@ export const CreateTrip = () => {
     connectionInfo,
     resetSteps,
     tripInfo,
-  } = useSelector((state) => ({
+  } = useSelector(state => ({
     userAngle: state.userMomentReducer.angle,
     userSteps: state.userMomentReducer.steps,
     resetSteps: state.userMomentReducer.resetSteps,
@@ -53,32 +52,6 @@ export const CreateTrip = () => {
     averageAngle: 0,
   });
 
-  const getAllNodes = async () => {
-    const requestOptions = {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        market: window.sessionStorage.getItem("marketVal"),
-      }),
-    };
-    const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
-      requestOptions
-    );
-
-    response.json().then((data) => {
-      const allNodesData = [];
-      Object.keys(data).map((d) => {
-        allNodesData.push(data[d]);
-      });
-      dispatch(getAllNodesAction(allNodesData));
-    });
-  };
-
-  useEffect(() => {
-    getAllNodes();
-  }, []);
-
   useEffect(() => {
     setFinalSteps(userSteps);
   }, [userSteps]);
@@ -89,14 +62,14 @@ export const CreateTrip = () => {
     const avgX = alphaSum.cosAlphaSum / alphaReadingsCounted;
     const avgY = alphaSum.sinAlphaSum / alphaReadingsCounted;
     const avgAngle = (Math.atan2(avgY, avgX) * (180 / Math.PI) + 360) % 360;
-    setAverageAngleData((prev) => ({
+    setAverageAngleData(prev => ({
       ...prev,
       averageAngle: parseInt(avgAngle),
     }));
   };
 
   useEffect(() => {
-    setAverageAngleData((prevAngle) => {
+    setAverageAngleData(prevAngle => {
       let sumX = prevAngle.angleSum.cosAlphaSum;
       let sumY = prevAngle.angleSum.sinAlphaSum;
       let interval = prevAngle.interval + 1;
@@ -109,14 +82,14 @@ export const CreateTrip = () => {
     calculateAverageAngle();
   }, [userSteps]);
 
-  const onSelect = (selectedOption) => {
+  const onSelect = selectedOption => {
     handleClose();
     setSourceNodeEdit(false);
     dispatch(updateCurrentSource(selectedOption));
     dispatch(updateTripDataAdd(selectedOption));
   };
 
-  const parentCallback = (imageData) => {
+  const parentCallback = imageData => {
     dispatch(
       updateTripDataAdd({
         label: "RELATED_TO",
@@ -168,7 +141,7 @@ export const CreateTrip = () => {
         <input
           type="text"
           value={finalSteps}
-          onChange={(e) => {
+          onChange={e => {
             setFinalSteps(parseInt(e.target.value) || 0);
           }}
         />
@@ -261,7 +234,7 @@ export const CreateTrip = () => {
       </div>
 
       <SearchBox
-        onSelect={(selectedOption) => {
+        onSelect={selectedOption => {
           handleClose();
           dispatch(updateDestinationNode(selectedOption));
           setConnectNodeModal(true);
