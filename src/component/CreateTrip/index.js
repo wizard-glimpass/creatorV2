@@ -56,6 +56,10 @@ export const CreateTrip = () => {
     setFinalSteps(userSteps);
   }, [userSteps]);
 
+  useEffect(() => {
+    dispatch(updateUserMoment({ resetSteps: new Date() }));
+  }, []);
+
   const calculateAverageAngle = () => {
     const { angleSum: alphaSum, interval: alphaReadingsCounted } =
       averageAngleData;
@@ -117,19 +121,20 @@ export const CreateTrip = () => {
   };
   return (
     <div className="create-trip-container">
-      <button
+      {/* <button
         onClick={() => {
           setAverageAngleData({
             angleSum: { sinAlphaSum: 0, cosAlphaSum: 0 },
             interval: 0,
             averageAngle: 0,
           });
-          setOpen(true);
+          // setOpen(true);
+          dispatch(updateUserMoment({ permissionGranted: false }));
         }}
         className="button button--primary"
       >
         Reset steps and angle
-      </button>
+      </button> */}
       <Modal
         isOpen={connectNodeModal}
         onClose={() => {
@@ -181,7 +186,6 @@ export const CreateTrip = () => {
       <Modal isOpen={open} onClose={handleClose}>
         <GifSlideshow
           requestPermission={() => {
-            dispatch(updateUserMoment({ resetSteps: !resetSteps }));
             setOpen(false);
             delete window.calibrateOffset;
           }}

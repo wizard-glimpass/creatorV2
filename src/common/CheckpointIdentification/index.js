@@ -22,11 +22,11 @@ const CheckpointIdentification = ({
     setShowCheckpointModal(false);
   };
 
-  const handleTextChange = (e) => {
+  const handleTextChange = e => {
     setText(e.target.value);
   };
 
-  const handleImageChange = (e) => {
+  const handleImageChange = e => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
       setImage(file);
@@ -59,14 +59,14 @@ const CheckpointIdentification = ({
           method: "POST",
           body: formData,
         })
-          .then((response) => response.json())
-          .then((data) => {
+          .then(response => response.json())
+          .then(data => {
             parentCallback(data);
             dispatch(showSnackbar(data, "success"));
 
             // You can call parentCallback or perform other actions based on the response
           })
-          .catch((error) => {
+          .catch(error => {
             dispatch(showSnackbar(error, "alert"));
           });
 
@@ -93,8 +93,9 @@ const CheckpointIdentification = ({
             className="checkpoint-image"
           />
         )}
-        <button onClick={uploadImage}>
-          Proceed <small>image is not compulsory</small>
+        <br />
+        <button className="button button--primary" onClick={uploadImage}>
+          Proceed
         </button>{" "}
         {/* Add this line */}
       </Modal>

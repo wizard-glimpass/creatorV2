@@ -9,7 +9,7 @@ const gifs = [
 
 const instructions = [
   {
-    title: "Open your compass app in device and heads up to NORTH direction",
+    title: "Go to the Nearest shop . Face towards the shop's gate and click",
     description: "",
   },
 ];

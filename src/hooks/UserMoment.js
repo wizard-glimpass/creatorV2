@@ -11,6 +11,10 @@ import { useDispatch, useSelector } from "react-redux";
 import { updateUserMoment } from "../store/actions/userMoment";
 import SearchBox from "../common/SearchBox";
 
+import facingToShop from "../assets/facingToShop.gif";
+import goingToShop from "../assets/goingToShop.gif";
+import QRScanner from "../component/QRScanner";
+
 window.calibrateShopAngle = 0;
 
 export const UserMoment = () => {
@@ -52,12 +56,18 @@ export const UserMoment = () => {
       calibrateShop: state.appMetaInfoReducer.calibrateShop,
     }));
 
+  const [isKingNodeSet, setKingNodeSet] = useState(true);
+  const [scanQrCode, setScanQrCode] = useState(false);
+
+  const [currentSlide, setCurrentSlide] = useState(0);
+
   useEffect(() => {
-    steps.current = 0;
+    window.resetSteps = true;
   }, [resetSteps]);
 
   useEffect(() => {
-    window.calibrateShopAngle = calibrateShop?.shop_angle;
+    if (calibrateShop?.shop_angle || calibrateShop?.shop_angle === 0)
+      window.calibrateShopAngle = calibrateShop.shop_angle;
   }, [calibrateShop]);
 
   const permissionGrantedRef = useRef(permissionGranted);
@@ -250,28 +260,92 @@ export const UserMoment = () => {
     dispatch(updateUserMoment({ steps: parseFloat(steps.current) }));
 
     // main logic ends here  STEPS ALGO
+
+    if (window.resetSteps) {
+      steps.current = 0;
+      dispatch(updateUserMoment({ steps: steps.current }));
+      window.resetSteps = false;
+    }
   };
+
+  useEffect(() => {
+    if (allNodesData.length === 0) {
+      setKingNodeSet(false);
+    }
+  }, [allNodesData]);
 
   useEffect(() => {
     permissionGrantedRef.current = permissionGranted;
     if (permissionGranted) setOpen(false);
+    else {
+      setOpen(true);
+    }
   }, [permissionGranted]);
+
+  const handleScanData = data => {
+    console.log(`Scanned data: ${data}`);
+    // Here, you can route the user, display the data, or send it to a server
+  };
+
   return (
-    <Modal isOpen={open} onClose={handleClose}>
-      <GifSlideshow
-        requestPermission={() => {
-          requestPermission({ handleOrientation, handleMotion });
+    <>
+      {/* <Modal
+        isOpen={scanQrCode || true}
+        onClose={() => {
+          setScanQrCode(false);
         }}
-      />
-      {/* <SearchBox onSelect={onSelect} type="Source" data={allNodesData} /> */}
-      <SearchBox
-        onSelect={selectOptions => {
-          requestPermission({ handleOrientation, handleMotion });
-          dispatch(setCalibrateShop(selectOptions));
-        }}
-        type="calibrateSource"
-        data={allNodesData}
-      />
-    </Modal>
+      >
+        <QRScanner onScan={handleScanData} />
+      </Modal> */}
+      <Modal isOpen={open && allNodesData.length !== 0} onClose={handleClose}>
+        <SearchBox
+          onSelect={selectOptions => {
+            dispatch(setCalibrateShop(selectOptions));
+            handleClose();
+            setKingNodeSet(false);
+          }}
+          type="calibrateSource"
+          data={allNodesData}
+        />
+      </Modal>
+
+      <Modal isOpen={!isKingNodeSet} onClose={() => setKingNodeSet(true)}>
+        <div>
+          <h6 id="modal-title">Calibration Required</h6>
+
+          <div>
+            <div className="go-to-shop">
+              <img src={goingToShop} alt="Step 1" height="200" />
+              <p>
+                <b>Step 1:</b> Go to the {calibrateShop?.name || "nearest shop"}
+                .
+              </p>
+            </div>
+            <div>
+              <img src={facingToShop} alt="Step 2" height="200" />
+              <p>
+                <b>Step 2:</b> Face towards the shop's gate :{" "}
+                {calibrateShop?.name || "nearest shop"}.
+              </p>
+            </div>
+            <button
+              type="button"
+              className="button button--primary"
+              onClick={() => {
+                requestPermission({ handleOrientation, handleMotion });
+                setKingNodeSet(true);
+              }}
+            >
+              Calibrate
+            </button>
+
+            {/* <CountdownButton
+        handlePrevious={handleNext}
+        buttonText={currentSlide === 0 ? "Next" : "Calibrate"}
+      /> */}
+          </div>
+        </div>
+      </Modal>
+    </>
   );
 };
