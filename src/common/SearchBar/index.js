@@ -24,7 +24,6 @@ function SearchBar({ dataList, updateShopAngle }) {
   };
 
   const filterData = (newQuery) => {
-    console.log("hello");
     const lowerCaseQuery = newQuery.toLowerCase(); // Convert query to lower case
     const filteredList = dataList.filter(
       (item) =>
