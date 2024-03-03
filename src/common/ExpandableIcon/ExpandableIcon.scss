@@ -1,0 +1,44 @@
+$transition-time: 0.3s;
+$option-margin-vertical: 10px;
+
+.container {
+  position: relative;
+  display: inline-block;
+
+  .icon {
+    cursor: pointer;
+    // Add your icon styling here
+    &:hover {
+      opacity: 0.7; // Example of a hover state
+    }
+  }
+
+  .options {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    opacity: 0;
+    animation: slideDown $transition-time forwards;
+    // Style your options container here
+    z-index: 10;
+
+    > * {
+      // This targets all immediate children of .options
+      margin-top: $option-margin-vertical;
+      margin-bottom: $option-margin-vertical;
+    }
+
+    // If you want to remove the margin from the first and last child
+  }
+}
+
+@keyframes slideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
