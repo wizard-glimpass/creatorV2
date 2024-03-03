@@ -37,13 +37,10 @@ export const UserMoment = () => {
   const [final_speed, setFinalSpeed] = useState(0);
 
   //handlemotionvariables
-  const { permissionGranted, userSteps, userAngle, resetSteps } = useSelector(
-    (state) => ({
-      permissionGranted: state.appMetaInfoReducer.permissionGranted,
-      userSteps: state.userMomentReducer.steps,
-      resetSteps: state.userMomentReducer.resetSteps,
-    })
-  );
+  const { permissionGranted, resetSteps } = useSelector(state => ({
+    permissionGranted: state.appMetaInfoReducer.permissionGranted,
+    resetSteps: state.userMomentReducer.resetSteps,
+  }));
 
   useEffect(() => {
     steps.current = 0;
@@ -58,7 +55,7 @@ export const UserMoment = () => {
     setOpen(false);
   };
 
-  const handleOrientation = (event) => {
+  const handleOrientation = event => {
     dispatch(requestPermissionAction());
     dirRef.current = {
       alpha: parseInt(event.alpha),
@@ -75,7 +72,7 @@ export const UserMoment = () => {
     dispatch(updateUserMoment({ angle: window.calibrateAlpha }));
   };
 
-  const handleMotion = (event) => {
+  const handleMotion = event => {
     dispatch(requestPermissionAction());
 
     // main logic starts here  STEPS ALGO
