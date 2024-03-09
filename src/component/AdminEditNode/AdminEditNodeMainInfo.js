@@ -52,7 +52,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
       }),
     };
     const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
+      `https://application.glimpass.com/graph/get-all-nodes-by-market`,
       requestOptions
     );
 
@@ -94,7 +94,7 @@ const AdminEditNodeMainInfo = ({ currentNodeInfo }) => {
         body: JSON.stringify(payload),
       };
       await fetch(
-        "https://app.glimpass.com/graph/create-nodes",
+        "https://application.glimpass.com/graph/create-nodes",
         requestOptions
       );
 

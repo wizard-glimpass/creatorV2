@@ -24,7 +24,7 @@ const ValidateTrip = () => {
       }),
     };
     const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
+      `https://application.glimpass.com/graph/get-all-nodes-by-market`,
       requestOptions
     );
 
