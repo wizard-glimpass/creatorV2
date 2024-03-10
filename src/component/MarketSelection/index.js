@@ -23,7 +23,7 @@ const MarketSelection = () => {
       headers: { "Content-Type": "application/json" },
     };
     const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-market`,
+      `https://application.glimpass.com/graph/get-all-market`,
       requestOptions
     );
 
@@ -46,7 +46,7 @@ const MarketSelection = () => {
         imageUrl: marketImageUrl,
       }),
     };
-    await fetch(`https://app.glimpass.com/graph/add-market`, requestOptions);
+    await fetch(`https://application.glimpass.com/graph/add-market`, requestOptions);
     dispatch(showSnackbar("Market added successfully!", "success"));
     setModalOpen(false);
     getAllMarkets();
@@ -60,7 +60,7 @@ const MarketSelection = () => {
       }),
     };
     const response = await fetch(
-      `https://app.glimpass.com/graph/get-all-nodes-by-market`,
+      `https://application.glimpass.com/graph/get-all-nodes-by-market`,
       requestOptions
     );
 

@@ -28,7 +28,7 @@ const PreviewTrip = ({ disable = false }) => {
   //       headers: { "Content-Type": "application/json" },
   //       body: JSON.stringify(resp),
   //     };
-  //     await fetch("https://app.glimpass.com/graph/create", requestOptions);
+  //     await fetch("https://application.glimpass.com/graph/create", requestOptions);
 
   //     dispatch(showSnackbar("Trip added successfully!", "success"));
   //     dispatch(resetTripInfo());
@@ -50,7 +50,7 @@ const PreviewTrip = ({ disable = false }) => {
         body: JSON.stringify(resp),
       };
       const response = await fetch(
-        "https://app.glimpass.com/graph/create",
+        "https://application.glimpass.com/graph/create",
         requestOptions
       );
 

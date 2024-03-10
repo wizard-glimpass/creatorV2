@@ -55,7 +55,7 @@ const CheckpointIdentification = ({
 
         formData.append("file", compressedFile, `${image.name}.webp`);
         formData.append("folderName", imageFor);
-        fetch("https://app.glimpass.com/graph/upload", {
+        fetch("https://application.glimpass.com/graph/upload", {
           method: "POST",
           body: formData,
         })

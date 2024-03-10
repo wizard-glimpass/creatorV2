@@ -28,7 +28,7 @@ const PreviewNodes = ({ disable = false }) => {
   //       body: JSON.stringify(tripInfo),
   //     };
   //     const response = await fetch(
-  //       "https://app.glimpass.com/graph/create-nodes",
+  //       "https://application.glimpass.com/graph/create-nodes",
   //       requestOptions
   //     );
 
@@ -54,7 +54,7 @@ const PreviewNodes = ({ disable = false }) => {
         body: JSON.stringify(tripInfo),
       };
       const response = await fetch(
-        "https://app.glimpass.com/graph/create-nodes",
+        "https://application.glimpass.com/graph/create-nodes",
         requestOptions
       );
 

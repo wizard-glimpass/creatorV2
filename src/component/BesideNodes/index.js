@@ -37,7 +37,7 @@ const BesideNodes = ({ from }) => {
       body: JSON.stringify(payload),
     };
     const response = await fetch(
-      "https://app.glimpass.com/graph/get-beside-nodes",
+      "https://application.glimpass.com/graph/get-beside-nodes",
       requestOptions
     );
 
@@ -57,7 +57,7 @@ const BesideNodes = ({ from }) => {
         body: JSON.stringify(payload),
       };
       await fetch(
-        "https://app.glimpass.com/graph/update-connection",
+        "https://application.glimpass.com/graph/update-connection",
         requestOptions
       );
       setText("");
@@ -100,7 +100,7 @@ const BesideNodes = ({ from }) => {
         body: JSON.stringify(payload),
       };
       await fetch(
-        "https://app.glimpass.com/graph/delete-connection",
+        "https://application.glimpass.com/graph/delete-connection",
         requestOptions
       );
 
